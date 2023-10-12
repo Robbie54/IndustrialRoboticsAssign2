@@ -6,84 +6,35 @@ classdef CollisionChecking < handle
 
     properties
         Property1
+            
+
     end
 
     methods
         function self = CollisionChecking
-            self.CheckCollision(robot, sphereCenter, radius);
-            self.IsCollision(robot,qMatrix,faces,vertex,faceNormals,returnOnceFound);
-            self.GetLinkPoses(q, robot);
+            %object is preset
+            % self.getObject()
+            self.collisionCheck();
+            %self.IsCollision(robot,qMatrix,faces,vertex,faceNormals,returnOnceFound);
+            
         end
     end
 
 
     methods (Static)
-
-
-        %Below is all bad code from w5 thinking we can make a combination of q1 and
-        %3 to check if the robots path will pass through the voloume of the object
-        %at any step
-
-        %% CheckCollision
-        % Checks for collisions with an object and can be modified to return an
-        % isCollision result
-
-        %this function is from w5 starter
-        function CheckCollision(robot, sphereCenter, radius)
-            % function isCollision = CheckCollision(robot, sphereCenter, radius)
-
-            tr = robot.fkine(robot.getpos).T;
-            endEffectorToCenterDist = sqrt(sum((sphereCenter-tr(1:3,4)').^2));
-            if endEffectorToCenterDist <= radius
-                disp('Oh no a collision!');
-                self.isCollision() = 1;
-            else
-                disp(['SAFE: End effector to sphere centre distance (', num2str(endEffectorToCenterDist), 'm) is more than the sphere radius, ' num2str(radius), 'm']);
-                self.isCollision() = 0;
-            end
-
+        function obj = getObject()
+            %for active joint tracking we could have a distance that scans
+            %in front of the direction the robot is traveling 
+            
+            [v,f,fn] = RectangularPrism([2,-1.1,-1], [3,1.1,1]); %rectangle size etc
+            obj = [v,f,fn];
         end
-        %% IsCollision
-        % This is based upon the output of questions 2.5 and 2.6
-        % Given a robot model (robot), and trajectory (i.e. joint state vector) (qMatrix)
-        % and triangle obstacles in the environment (faces,vertex,faceNormals)
-        function IsCollision(robot, qMatrix, faces, vertex, faceNormals, returnOnceFound)
-            result = IsCollision(robot, qMatrix, faces, vertex, faceNormals, returnOnceFound);
-            if nargin < 6
-                returnOnceFound = true;
-            end
-            result = false;
-
-            for qIndex = 1:size(qMatrix,1)
-                endEffectorToCenterDist = sqrt(sum((sphereCenter-tr(1:3,4)').^2));
-                if endEffectorToCenterDist <= radius
-                    disp('Oh no a collision!');
-                    %         isCollision = 1;
-                else
-                    disp(['SAFE: End effector to sphere centre distance (', num2str(endEffectorToCenterDist), 'm) is more than the sphere radius, ' num2str(radius), 'm']);
-                    %         isCollision = 0;
-                end
-            end
+        function collisionBool = collisionCheck(robot, qMatrix)
+            [vertex,faces,faceNormals] = getObject();
+            returnOnceFound = true; %can make this a passed parameter from main 
+            collisionBool = IsCollision(robot,qMatrix,faces,vertex,faceNormals,returnOnceFound);
         end
-        %% GetLinkPoses
-        % q - robot joint angles
-        % robot -  seriallink robot model
-        % transforms - list of transforms
-        function GetLinkPoses(q, robot)
-
-            links = robot.links;
-            transforms = zeros(4, 4, length(links) + 1);
-            transforms(:,:,1) = robot.base;
-
-            for i = 1:length(links)
-                L = links(1,i);
-
-                current_transform = transforms(:,:, i);
-
-                current_transform = current_transform * trotz(q(1,i) + L.offset) * ...
-                    transl(0,0, L.d) * transl(L.a,0,0) * trotx(L.alpha);
-                transforms(:,:,i + 1) = current_transform;
-            end
-        end
+          
     end
 end
+
