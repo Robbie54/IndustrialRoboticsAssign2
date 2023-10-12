@@ -1,8 +1,10 @@
 classdef Motion < handle
+
     methods
         function self = Motion
         end
     end
+
     methods (Static)
         function Functionality()
             r = Dobot()

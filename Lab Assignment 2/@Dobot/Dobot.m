@@ -28,7 +28,7 @@ function self = Dobot(baseTr,useTool,toolFilename)
             end
           
             self.CreateModel();
-            self.model.base = self.model.base.T * baseTr * trotx(pi/2) * troty(pi/2);
+            self.model.base = self.model.base.T * baseTr % * trotx(pi/2) * troty(pi/2);
             self.model.tool = self.toolTr;
 %             self.homeQ = self.initalQ;
             self.workspace = self.defaultWorkspace;

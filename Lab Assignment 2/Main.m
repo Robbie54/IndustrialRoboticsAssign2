@@ -4,8 +4,9 @@ clc
 clf
 
 % Environment.Run()
-r = Dobot()
-Robot2.Run()
+% Dobot.Run() - DO NOT USE.
+Drawbot.Run()
+% Motion.Functionality()
 
 
 %%GUI Panel 
