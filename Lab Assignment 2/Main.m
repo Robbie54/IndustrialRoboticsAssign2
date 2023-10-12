@@ -3,6 +3,6 @@ close all
 clc
 clf
 
-Environment.Run()
-Robot1.Run()
+% Environment.Run()
+r = Dobot()
 Robot2.Run()
