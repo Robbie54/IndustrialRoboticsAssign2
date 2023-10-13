@@ -1,1 +1,3 @@
-this file contains the code for Lab Assignment 2
+zum78 = Max Deda
+Robbie54 = Robert Howe
+miloboyd = Milo Boyd
