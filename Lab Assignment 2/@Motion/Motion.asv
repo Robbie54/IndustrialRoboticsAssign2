@@ -9,7 +9,7 @@ classdef Motion < handle
             r.model;
             q = zeros(1,7);
             b = SuctionCup();
-            b.suctionModel{1}.base = r.model.fkine(r.model.getpos());
+            b.SuctionModel{1}.base = r.model.fkine(r.model.getpos());
         end
     end
 end
