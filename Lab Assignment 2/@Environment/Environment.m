@@ -7,7 +7,7 @@ classdef Environment < handle
     methods
         function self = Environment()
             self.Run();
-            ends
+        end
     end
 
     methods (Static)

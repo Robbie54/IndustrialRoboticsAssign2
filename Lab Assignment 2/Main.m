@@ -4,7 +4,7 @@ clc
 clf
 
 % Environment.Run()
-% Dobot.Run() - DO NOT USE.
+% UR3.Run() - DO NOT USE.
 Drawbot.Run()
 % Motion.Functionality()
 

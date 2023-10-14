@@ -19,10 +19,9 @@ classdef Motion < handle
 
 
             %initialise robot and attach suction cup to the end effector
-            r = Dobot()
+            r = UR3()
             r.model;
             q = zeros(1,7);
-            %q = zeros(1,7);
             b = SuctionCup();
             b.suctionModel{1}.base = r.model.fkine(r.model.getpos());
             pause;
