@@ -3,9 +3,11 @@ close all
 clc
 clf
 
-% Environment.Run()
-% UR3.Run() - DO NOT USE.
-Drawbot.Run()
+Environment.Run()
+r1 = UR3()
+r1.model;
+r2 = Drawbot()
+r2.model;
 % Motion.Functionality()
 
 
