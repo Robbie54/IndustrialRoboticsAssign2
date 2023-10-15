@@ -67,13 +67,12 @@ classdef Motion < handle
             % spawn in brick at 0,0,0. translate by the initial brick
             % location matrix
             for paperIndex = 1:paperNo
-                paperUniqueID{paperIndex} = PlaceObject('papersheet_industrial.ply'); %brickMatrix(brickIndex, :)
+                paperUniqueID{paperIndex} = PlaceObject('papersheet_industrial_new.ply'); %brickMatrix(brickIndex, :)
                 vertices = get(paperUniqueID{paperIndex}, 'Vertices');
                 transformedVertices = [vertices,ones(size(vertices,1),1)] * transl(initialPaperMatrix(paperIndex,:))';
                 set(paperUniqueID{paperIndex},'Vertices',transformedVertices(:,1:3));
             end
             
-            axis equal;
             pause;
             %get initial starting robot position
             initialPosition = r.model.getpos();
@@ -111,7 +110,6 @@ classdef Motion < handle
                     r.model.animate(currentQPath(i, :));
                     drawnow();
                 end
-
 
 
                 % move to final Paper stack location
