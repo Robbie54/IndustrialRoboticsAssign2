@@ -3,11 +3,11 @@ classdef Motion < handle
     properties
     end
 
-    methods
-        function self = Motion
-            self.Functionality()
-        end
-    end
+    % methods
+    %     function self = Motion
+    %         self.Functionality()
+    %     end
+    % end
 
     methods (Static)
         function Functionality()
@@ -21,10 +21,10 @@ classdef Motion < handle
             %initialise robot and attach suction cup to the end effector
             r = UR3()
             r.model;
-            q = zeros(1,7);
-            b = SuctionCup();
-            b.suctionModel{1}.base = r.model.fkine(r.model.getpos());
-            pause;
+            %q = zeros(1,7);
+            %b = SuctionCup();
+            %b.suctionModel{1}.base = r.model.fkine(r.model.getpos());
+            %pause;
 
 
 
@@ -32,16 +32,28 @@ classdef Motion < handle
             %final Paper Stack
 
             %Define Number of Paper sheets to be manipulated
-            paperNo = 9;
+            paperNo = 5;
 
             %initial paper locations
             initialPaperMatrix = zeros(paperNo,3);
             %initialPaperMatrix(1,:) = ....
+            initialPaperMatrix(1,:) = [-0.5, -0.5, 0.6];
+            initialPaperMatrix(2,:) = [-0.5, -0.5, 0.61];
+            initialPaperMatrix(3,:) = [-0.5, -0.5, 0.62];
+            initialPaperMatrix(4,:) = [-0.5, -0.5, 0.63];
+            initialPaperMatrix(5,:) = [-0.5, -0.5, 0.64];
 
 
             %final paper locations
             finalPaperMatrix = zeros(paperNo,3);
             %finalPaperMatrix(1,:) = ....
+            finalPaperMatrix(1,:) = [-0.5, 0.5, 0.6];
+            finalPaperMatrix(2,:) = [-0.5, 0.5, 0.61];
+            finalPaperMatrix(3,:) = [-0.5, 0.5, 0.62];
+            finalPaperMatrix(4,:) = [-0.5, 0.5, 0.63];
+            finalPaperMatrix(5,:) = [-0.5, 0.5, 0.64];
+
+        
 
 
 
@@ -55,12 +67,14 @@ classdef Motion < handle
             % spawn in brick at 0,0,0. translate by the initial brick
             % location matrix
             for paperIndex = 1:paperNo
-                paperUniqueID{paperIndex} = PlaceObject('HalfSizedRedGreenBrick.ply'); %brickMatrix(brickIndex, :)
+                paperUniqueID{paperIndex} = PlaceObject('papersheet_industrial.ply'); %brickMatrix(brickIndex, :)
                 vertices = get(paperUniqueID{paperIndex}, 'Vertices');
                 transformedVertices = [vertices,ones(size(vertices,1),1)] * transl(initialPaperMatrix(paperIndex,:))';
                 set(paperUniqueID{paperIndex},'Vertices',transformedVertices(:,1:3));
             end
-
+            
+            axis equal;
+            pause;
             %get initial starting robot position
             initialPosition = r.model.getpos();
 
