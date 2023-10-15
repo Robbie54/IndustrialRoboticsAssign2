@@ -35,7 +35,7 @@ classdef Motion < handle
             %Define Number of Paper sheets to be manipulated
             paperNo = 5;
 
-            %initial paper locations
+            %initial paper stack
             initialPaperMatrix = zeros(paperNo,3);
             %initialPaperMatrix(1,:) = ....
             initialPaperMatrix(1,:) = [0.2, -0.315, 0.7];
@@ -44,7 +44,11 @@ classdef Motion < handle
             initialPaperMatrix(4,:) = [0.2, -0.315, 0.73];
             initialPaperMatrix(5,:) = [0.2, -0.315, 0.74];
 
-            %final paper locations
+            %drawing board
+            drawingBoardMatrix = zeroes(1,3);
+            drawingBoardMatrix(1,:) = [-0.2,0.315,0.7]
+
+            %final paper stack
             finalPaperMatrix = zeros(paperNo,3);
             %finalPaperMatrix(1,:) = ....
             finalPaperMatrix(1,:) = [-0.2, 0.315, 0.7];
@@ -67,83 +71,20 @@ classdef Motion < handle
                 set(paperUniqueID{paperIndex},'Vertices',transformedVertices(:,1:3));
             end
 
-            % pause;
-            %get initial starting robot position
-            initialPosition = r1.model.getpos();
-
             %Create a nested for loop to iterate through the robot arms
             %path and update the animation
 
             %For each brick 1-9:
             for paperIndex = 1:paperNo
+                placeDrawingBoard(paperIndex);
 
-                % Get the initial and final paper sheet location
-                currentPaper = initialPaperMatrix(paperIndex, :);
-                finalPaper = finalPaperMatrix(paperIndex, :);
+                %execute drawing motion.
 
-                %set count variable to dictate how many joint angle paths
-                %will be created to model the Path.
-                count = 100;
+                placeFinalStack(paperIndex);
 
-                %get the robots current arm location
-                robotLocation = r1.model.getpos();
-
-                %calculate the joint angles necessary ot traverse to the
-                %chosen paper location. paper is rotated so the Z-axis is
-                %facing down here so that the robot grabs the paper from
-                %the top.
-                currentPaperPath = r1.model.ikcon(transl(currentPaper)*troty(pi));
-
-                %computes a joint space trajectory that inrerpolates
-                %between the robots position and chosen brick location.
-                currentQPath = jtraj(robotLocation, currentPaperPath, count);
-
-                %for each joint step
-                for i = 1:size(currentQPath, 1)
-                    %animate the robots arm
-                    r1.model.animate(currentQPath(i, :));
-                    drawnow();
-                end
-
-                %% move to final Paper stack location
-                %calculate the joint angles necessary to traverse to the
-                %paper location. paper is rotated so the Z-axis is
-                %facing down here so that the robot places the paper from
-                %the top.
-                finalPaperPath = r1.model.ikcon(transl(finalPaper)*troty(pi));
-
-                %computes a joint space trajectory that inrerpolates
-                %between the robots position and final paper location.
-                finalQPath = jtraj(currentPaperPath, finalPaperPath, count);
-
-                %for each joint step
-                for i = 1:size(finalQPath, 1)
-
-                    %animate arm
-                    r1.model.animate(finalQPath(i, :));
-
-                    %calculate the end effector transform of the robot arm
-                    endEffectorTransform = r1.model.fkine(r1.model.getpos()).T;
-
-                    %update paper vertices to the new coordinates of the
-                    %robots end effector
-                    transformedBrickVertices = [vertices, ones(size(vertices, 1), 1)]*endEffectorTransform';
-
-                    %update the paper vertices with the transformed
-                    %vertices
-                    set(paperUniqueID{paperIndex}, 'Vertices', transformedBrickVertices(:, 1:3));
-                    drawnow();
-                end
+            
             end
 
-            %%move robot back to initial position
-            count = 100;
-            robotLocation = r1.model.getpos();
-            QPath = jtraj(robotLocation, initialPosition, count);
-            for i = 1:size(QPath, 1)
-                r1.model.animate(QPath(i, :));
-                drawnow();
-            end
         end
 
         function DrawbotMotion()
@@ -257,5 +198,147 @@ classdef Motion < handle
                 drawnow();
             end
         end
+        function placeDrawingBoard(a)
+    
+            initialPosition = r1.model.getpos()
+            currentPaper = initialPaperMatrix(a, :);
+            drawingBoard = drawingBoardMatrix(1,:)
+        
+            %set count variable to dictate how many joint angle paths
+            %will be created to model the Path.
+            count = 100;
+
+            %get the robots current arm location
+            robotLocation = r1.model.getpos();
+
+            %calculate the joint angles necessary ot traverse to the
+            %chosen paper location. paper is rotated so the Z-axis is
+            %facing down here so that the robot grabs the paper from
+            %the top.
+            currentPaperPath = r1.model.ikcon(transl(currentPaper)*troty(pi));
+
+            %computes a joint space trajectory that inrerpolates
+            %between the robots position and chosen brick location.
+            currentQPath = jtraj(robotLocation, currentPaperPath, count);
+
+            %for each joint step
+            for i = 1:size(currentQPath, 1)
+                %animate the robots arm
+                r1.model.animate(currentQPath(i, :));
+                drawnow();
+            end
+
+            %% move to final Paper stack location
+            %calculate the joint angles necessary to traverse to the
+            %paper location. paper is rotated so the Z-axis is
+            %facing down here so that the robot places the paper from
+            %the top.
+            finalPaperPath = r1.model.ikcon(transl(drawingBoard)*troty(pi));
+
+            %computes a joint space trajectory that inrerpolates
+            %between the robots position and final paper location.
+            finalQPath = jtraj(currentPaperPath, finalPaperPath, count);
+
+            %for each joint step
+            for i = 1:size(finalQPath, 1)
+
+                %animate arm
+                r1.model.animate(finalQPath(i, :));
+
+                %calculate the end effector transform of the robot arm
+                endEffectorTransform = r1.model.fkine(r1.model.getpos()).T;
+
+                %update paper vertices to the new coordinates of the
+                %robots end effector
+                transformedBrickVertices = [vertices, ones(size(vertices, 1), 1)]*endEffectorTransform';
+
+                %update the paper vertices with the transformed
+                %vertices
+                set(paperUniqueID{a}, 'Vertices', transformedBrickVertices(:, 1:3));
+                drawnow();
+            end
+
+            %%move robot back to initial position
+            count = 100;
+            robotLocation = r1.model.getpos();
+            QPath = jtraj(robotLocation, initialPosition, count);
+            for i = 1:size(QPath, 1)
+                r1.model.animate(QPath(i, :));
+                drawnow();
+            end
+
+            
+        end
+        function placeFinalStack(a)
+    
+            initialPosition = r1.model.getpos()
+            drawingBoard = drawingBoardMatrix(1, :);
+            finalPaper = finalPaperMatrix(a, :);
+
+        
+            %set count variable to dictate how many joint angle paths
+            %will be created to model the Path.
+            count = 100;
+
+            %get the robots current arm location
+            robotLocation = r1.model.getpos();
+
+            %calculate the joint angles necessary ot traverse to the
+            %chosen paper location. paper is rotated so the Z-axis is
+            %facing down here so that the robot grabs the paper from
+            %the top.
+            currentPaperPath = r1.model.ikcon(transl(drawingBoard)*troty(pi));
+
+            %computes a joint space trajectory that inrerpolates
+            %between the robots position and chosen brick location.
+            currentQPath = jtraj(robotLocation, currentPaperPath, count);
+
+            %for each joint step
+            for i = 1:size(currentQPath, 1)
+                %animate the robots arm
+                r1.model.animate(currentQPath(i, :));
+                drawnow();
+            end
+
+            %% move to final Paper stack location
+            %calculate the joint angles necessary to traverse to the
+            %paper location. paper is rotated so the Z-axis is
+            %facing down here so that the robot places the paper from
+            %the top.
+            finalPaperPath = r1.model.ikcon(transl(finalPaper)*troty(pi));
+
+            %computes a joint space trajectory that inrerpolates
+            %between the robots position and final paper location.
+            finalQPath = jtraj(currentPaperPath, finalPaperPath, count);
+
+            %for each joint step
+            for i = 1:size(finalQPath, 1)
+
+                %animate arm
+                r1.model.animate(finalQPath(i, :));
+
+                %calculate the end effector transform of the robot arm
+                endEffectorTransform = r1.model.fkine(r1.model.getpos()).T;
+
+                %update paper vertices to the new coordinates of the
+                %robots end effector
+                transformedBrickVertices = [vertices, ones(size(vertices, 1), 1)]*endEffectorTransform';
+
+                %update the paper vertices with the transformed
+                %vertices
+                set(paperUniqueID{a}, 'Vertices', transformedBrickVertices(:, 1:3));
+                drawnow();
+            end
+
+            %%move robot back to initial position
+            count = 100;
+            robotLocation = r1.model.getpos();
+            QPath = jtraj(robotLocation, initialPosition, count);
+            for i = 1:size(QPath, 1)
+                r1.model.animate(QPath(i, :));
+                drawnow();
+            end
+        end
+    
     end
 end
