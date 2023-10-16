@@ -4,12 +4,12 @@ clc
 clf
 
 Environment.Run()
-r1 = UR3()
-r1.model;
-r2 = Drawbot()
-r2.model;
-% Motion.Functionality()
-
+% r1 = UR3()
+% r1.model;
+% r2 = Drawbot()
+% r2.model;
+Motion.UR3Motion()
+Motion.DrawbotMotion()
 
 %%GUI Panel 
 %withing teach there is this 
