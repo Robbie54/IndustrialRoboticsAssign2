@@ -1,12 +1,24 @@
 classdef Motion < handle
 
+    properties (Constant)
+        paperNo = 5;
+        initialPaper = Motion.initialPaperMatrix();
+        finalPaper = Motion.finalPaperMatrix();
+        boardLocation = Motion.drawingBoardMatrix();
+
+    end
+
     properties
+        r1 = UR3();
     end
 
     methods
         function self = Motion
+            % self.r1 = UR3();
             self.UR3Motion()
             self.DrawbotMotion()
+            self.placeDrawingBoard(a)
+            self.placeFinalStack(a)
         end
     end
 
@@ -19,7 +31,7 @@ classdef Motion < handle
 
             %initialise robot and attach suction cup to the end effector
             % hold on;
-            r1 = UR3()
+            % r1 = UR3()
             r1.model;
             %q = zeros(1,7);
             %b = SuctionCup();
@@ -28,34 +40,12 @@ classdef Motion < handle
             
             axis equal;
 
+            %initialise constant properties into function
+            paperNo = Motion.paperNo;
+            initialPaper = Motion.initialPaper;
+            finalPaper = Motion.finalPaper;
+            boardLocation = Motion.boardLocation;
 
-            %define Matrices that hold the locations of the intial and
-            %final Paper Stack
-
-            %Define Number of Paper sheets to be manipulated
-            paperNo = 5;
-
-            %initial paper stack
-            initialPaperMatrix = zeros(paperNo,3);
-            %initialPaperMatrix(1,:) = ....
-            initialPaperMatrix(1,:) = [0.2, -0.315, 0.7];
-            initialPaperMatrix(2,:) = [0.2, -0.315, 0.71];
-            initialPaperMatrix(3,:) = [0.2, -0.315, 0.72];
-            initialPaperMatrix(4,:) = [0.2, -0.315, 0.73];
-            initialPaperMatrix(5,:) = [0.2, -0.315, 0.74];
-
-            %drawing board
-            drawingBoardMatrix = zeroes(1,3);
-            drawingBoardMatrix(1,:) = [-0.2,0.315,0.7]
-
-            %final paper stack
-            finalPaperMatrix = zeros(paperNo,3);
-            %finalPaperMatrix(1,:) = ....
-            finalPaperMatrix(1,:) = [-0.2, 0.315, 0.7];
-            finalPaperMatrix(2,:) = [-0.2, 0.315, 0.71];
-            finalPaperMatrix(3,:) = [-0.2, 0.315, 0.72];
-            finalPaperMatrix(4,:) = [-0.2, 0.315, 0.73];
-            finalPaperMatrix(5,:) = [-0.2, 0.315, 0.74];
 
             %create matrix that will store unique identifer to the paper so
             %they can be called in the future
@@ -67,7 +57,7 @@ classdef Motion < handle
             for paperIndex = 1:paperNo
                 paperUniqueID{paperIndex} = PlaceObject('papersheet_industrial_new.ply'); %brickMatrix(brickIndex, :)
                 vertices = get(paperUniqueID{paperIndex}, 'Vertices');
-                transformedVertices = [vertices,ones(size(vertices,1),1)] * transl(initialPaperMatrix(paperIndex,:))';
+                transformedVertices = [vertices,ones(size(vertices,1),1)] * transl(initialPaper(paperIndex,:))';
                 set(paperUniqueID{paperIndex},'Vertices',transformedVertices(:,1:3));
             end
 
@@ -76,11 +66,11 @@ classdef Motion < handle
 
             %For each brick 1-9:
             for paperIndex = 1:paperNo
-                placeDrawingBoard(paperIndex);
+                Motion.placeDrawingBoard(paperIndex);
 
                 %execute drawing motion.
 
-                placeFinalStack(paperIndex);
+                Motion.placeFinalStack(paperIndex);
 
             
             end
@@ -200,9 +190,9 @@ classdef Motion < handle
         end
         function placeDrawingBoard(a)
     
-            initialPosition = r1.model.getpos()
+            initialPosition = r1.model.getpos();
             currentPaper = initialPaperMatrix(a, :);
-            drawingBoard = drawingBoardMatrix(1,:)
+            drawingBoard = drawingBoardMatrix(1,:);
         
             %set count variable to dictate how many joint angle paths
             %will be created to model the Path.
@@ -339,6 +329,42 @@ classdef Motion < handle
                 drawnow();
             end
         end
-    
+
+        function initialPaper = initialPaperMatrix()
+            %initial paper stack
+            paperNo = Motion.paperNo;
+
+            initialPaperMatrix = zeros(paperNo,3);
+            %initialPaperMatrix(1,:) = ....
+            initialPaperMatrix(1,:) = [0.2, -0.315, 0.7];
+            initialPaperMatrix(2,:) = [0.2, -0.315, 0.71];
+            initialPaperMatrix(3,:) = [0.2, -0.315, 0.72];
+            initialPaperMatrix(4,:) = [0.2, -0.315, 0.73];
+            initialPaperMatrix(5,:) = [0.2, -0.315, 0.74];
+            initialPaper = initialPaperMatrix;
+        end
+
+        function finalPaper = finalPaperMatrix()
+            %final paper stack
+            paperNo = Motion.paperNo;
+
+            finalPaperMatrix = zeros(paperNo,3);
+            %finalPaperMatrix(1,:) = ....
+            finalPaperMatrix(1,:) = [-0.2, 0.315, 0.7];
+            finalPaperMatrix(2,:) = [-0.2, 0.315, 0.71];
+            finalPaperMatrix(3,:) = [-0.2, 0.315, 0.72];
+            finalPaperMatrix(4,:) = [-0.2, 0.315, 0.73];
+            finalPaperMatrix(5,:) = [-0.2, 0.315, 0.74];
+            finalPaper = finalPaperMatrix;
+        end
+
+        function boardLocation = drawingBoardMatrix()
+            %drawing board
+            drawingBoardMatrix = zeros(1,3);
+            drawingBoardMatrix(1,:) = [-0.2,0.315,0.7];
+            boardLocation = drawingBoardMatrix;
+        end
+        
+
     end
 end
