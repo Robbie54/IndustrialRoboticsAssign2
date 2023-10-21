@@ -57,7 +57,7 @@ classdef Motion < handle
             % spawn in brick at 0,0,0. translate by the initial brick
             % location matrix
             for paperIndex = 1:paperNo
-                paperUniqueID{paperIndex} = PlaceObject('papersheet_industrial_new.ply'); %brickMatrix(brickIndex, :)
+                paperUniqueID{paperIndex} = PlaceObject('papersheet_industrial_flipped.ply'); %brickMatrix(brickIndex, :)
                 vertices = get(paperUniqueID{paperIndex}, 'Vertices');
                 transformedVertices = [vertices,ones(size(vertices,1),1)] * transl(initialPaper(paperIndex,:))';
                 set(paperUniqueID{paperIndex},'Vertices',transformedVertices(:,1:3));
