@@ -2,12 +2,13 @@ classdef Motion < handle
 
     properties (Constant)
         paperNo = 5;
+        ColourPoints = 9;
         initialPaper = Motion.initialPaperMatrix();
         finalPaper = Motion.finalPaperMatrix();
         boardLocation = Motion.drawingBoardMatrix();
         HomePosition = Motion.HomePositionMatrix();
+        penDrawing = Motion.penDrawingMatrix();
     end
-
     properties
         % r1 = UR3();
         % r2 = Drawbot();
@@ -41,6 +42,7 @@ classdef Motion < handle
 
             %initialise constant properties into function
             paperNo = Motion.paperNo;
+            ColourPoints = Motion.ColourPoints;
             initialPaper = Motion.initialPaper;
             finalPaper = Motion.finalPaper;
             boardLocation = Motion.boardLocation;
@@ -74,103 +76,8 @@ classdef Motion < handle
                 %moving paper from initial stack to drawing board
                 placePaper(paperIndex, initialLocation, middleLocation, HomePosition);
 
-                count = 50;
-                ColourPoints = 9;
-
-                %initial paper locations
-                Drawing = zeros(ColourPoints,3);
-                %initialPaperMatrix(1,:) = ....
-                Drawing(1,:) = [-0.2, 0.4, 0.73];
-                Drawing(2,:) = [-0.2, 0.3, 0.73];
-                Drawing(3,:) = [-0.2, 0.2, 0.73];
-                Drawing(4,:) = [-0.2, 0.1, 0.73];
-                Drawing(5,:) = [-0.2, 0, 0.73];
-                Drawing(6,:) = [-0.2, -0.1, 0.73];
-                Drawing(7,:) = [-0.2, -0.2, 0.73];
-                Drawing(8,:) = [-0.2, -0.3, 0.73];
-                Drawing(9,:) = [-0.2, -0.4, 0.73];
-                Drawing(10,:) = [-0.2, 0, 0.73];
-
-                rsp = r2.model.getpos;
-                r2p1 = r2.model.ikcon(transl(Drawing(1,:)));
-                r2p2 = r2.model.ikcon(transl(Drawing(2,:)));
-                r2p3 = r2.model.ikcon(transl(Drawing(3,:)));
-                r2p4 = r2.model.ikcon(transl(Drawing(4,:)));
-                r2p5 = r2.model.ikcon(transl(Drawing(5,:)));
-                r2p6 = r2.model.ikcon(transl(Drawing(6,:)));
-                r2p7 = r2.model.ikcon(transl(Drawing(7,:)));
-                r2p8 = r2.model.ikcon(transl(Drawing(8,:)));
-                r2p9 = r2.model.ikcon(transl(Drawing(9,:)));
-                r2p10 = r2.model.ikcon(transl(Drawing(10,:)));
-
-
-                %% Pathing and Animation
-                % Pathing from Start to Brick 1 Position
-                qPath1 = jtraj(rsp,r2p1,count);
-                for i = 1:length(qPath1)
-                    r2.model.animate(qPath1(i,:));
-                    drawnow();
-                end
-
-                qPath2 = jtraj(r2p1,r2p2,count);
-                for i = 1:length(qPath2)
-                    r2.model.animate(qPath2(i,:));
-                    drawnow();
-                end
-
-                qPath3 = jtraj(r2p2,r2p3,count);
-                for i = 1:length(qPath3)
-                    r2.model.animate(qPath3(i,:));
-                    drawnow();
-                end
-
-                qPath4 = jtraj(r2p3,r2p4,count);
-                for i = 1:length(qPath4)
-                    r2.model.animate(qPath4(i,:));
-                    drawnow();
-                end
-
-                qPath5 = jtraj(r2p4,r2p5,count);
-                for i = 1:length(qPath5)
-                    r2.model.animate(qPath5(i,:));
-                    drawnow();
-                end
-
-                qPath6 = jtraj(r2p5,r2p6,count);
-                for i = 1:length(qPath6)
-                    r2.model.animate(qPath6(i,:));
-                    drawnow();
-                end
-
-                qPath7 = jtraj(r2p6,r2p7,count);
-                for i = 1:length(qPath7)
-                    r2.model.animate(qPath7(i,:));
-                    drawnow();
-                end
-
-                qPath8 = jtraj(r2p7,r2p8,count);
-                for i = 1:length(qPath8)
-                    r2.model.animate(qPath8(i,:));
-                    drawnow();
-                end
-
-                qPath9 = jtraj(r2p8,r2p9,count);
-                for i = 1:length(qPath9)
-                    r2.model.animate(qPath9(i,:));
-                    drawnow();
-                end
-
-                qPath10 = jtraj(r2p9,r2p10,count);
-                for i = 1:length(qPath10)
-                    r2.model.animate(qPath10(i,:));
-                    drawnow();
-                end
-
-                qPath11 = jtraj(r2p10,rsp,count);
-                for i = 1:length(qPath11)
-                    r2.model.animate(qPath11(i,:));
-                    drawnow();
-                end
+                %draw on page 
+                draw();
 
                 %moving paper from drawing board to final stack
                 placePaper(paperIndex, middleLocation, finalLocation, HomePosition);
@@ -244,6 +151,39 @@ classdef Motion < handle
                     drawnow();
                 end
             end
+            function draw()
+                
+                count = 50;
+                penDrawing = Motion.penDrawing;
+                rsp = r2.model.getpos;
+                rspFinal = rsp;
+                r2p1 = r2.model.ikcon(transl(penDrawing(1,:)));
+                r2p2 = r2.model.ikcon(transl(penDrawing(2,:)));
+                r2p3 = r2.model.ikcon(transl(penDrawing(3,:)));
+                r2p4 = r2.model.ikcon(transl(penDrawing(4,:)));
+                r2p5 = r2.model.ikcon(transl(penDrawing(5,:)));
+                r2p6 = r2.model.ikcon(transl(penDrawing(6,:)));
+                r2p7 = r2.model.ikcon(transl(penDrawing(7,:)));
+                r2p8 = r2.model.ikcon(transl(penDrawing(8,:)));
+                r2p9 = r2.model.ikcon(transl(penDrawing(9,:)));
+                r2p10 = r2.model.ikcon(transl(penDrawing(10,:)));
+
+                rspArray = [rsp,r2p1,r2p2,r2p3,r2p4,r2p5,r2p6,r2p7,r2p8,r2p9,r2p10,rspFinal]; 
+
+
+                for i =1:numel(rspArray)
+                    if i == 12
+                        break;
+                    else 
+                        qPath = jtraj(rspArray(i),rspArray(i+1),count);
+                        for j = 1:length(qPath)
+                            r2.model.animate(qPath(j,:));
+                            drawnow();
+                        end
+                    end
+                end
+
+            end
         end
 
         function initialPaper = initialPaperMatrix()
@@ -287,5 +227,25 @@ classdef Motion < handle
             HomePositionMatrix(1,:) = [0,0.5,1.1];
             HomePosition = HomePositionMatrix;
         end
+
+        function penDrawing = penDrawingMatrix()
+
+            ColourPoints = Motion.ColourPoints;
+
+            penDrawingMatrix = zeros(ColourPoints,3);
+            penDrawingMatrix(1,:) = [-0.2, 0.4, 0.73];
+            penDrawingMatrix(2,:) = [-0.2, 0.3, 0.73];
+            penDrawingMatrix(3,:) = [-0.2, 0.2, 0.73];
+            penDrawingMatrix(4,:) = [-0.2, 0.1, 0.73];
+            penDrawingMatrix(5,:) = [-0.2, 0, 0.73];
+            penDrawingMatrix(6,:) = [-0.2, -0.1, 0.73];
+            penDrawingMatrix(7,:) = [-0.2, -0.2, 0.73];
+            penDrawingMatrix(8,:) = [-0.2, -0.3, 0.73];
+            penDrawingMatrix(9,:) = [-0.2, -0.4, 0.73];
+            penDrawingMatrix(10,:) = [-0.2, 0, 0.73];
+            penDrawing = penDrawingMatrix;
+        end
+
+
     end
 end
