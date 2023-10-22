@@ -6,12 +6,6 @@ classdef Motion < handle
         initialPaper = Motion.initialPaperMatrix();
         finalPaper = Motion.finalPaperMatrix();
         boardLocation = Motion.drawingBoardMatrix();
-<<<<<<< HEAD
-        penDrawing = Motion.penDrawingMatrix();
-=======
-        HomePosition = Motion.HomePositionMatrix();
-        % penDrawing = Motion.penDrawingMatrix();
->>>>>>> 40bfab72533041950462d0f937595151fe27aad3
     end
     properties
         % r1 = UR3();
@@ -50,12 +44,6 @@ classdef Motion < handle
             initialPaper = Motion.initialPaper;
             finalPaper = Motion.finalPaper;
             boardLocation = Motion.boardLocation;
-<<<<<<< HEAD
-            penDrawing = Motion.penDrawing;
-=======
-            HomePosition = Motion.HomePosition;
-            % penDrawing = Motion.penDrawing;
->>>>>>> 40bfab72533041950462d0f937595151fe27aad3
 
             %create matrix that will store unique identifer to the paper so
             %they can be called in the future
@@ -416,52 +404,5 @@ classdef Motion < handle
             drawingBoardMatrix(1,:) = [-0.2,0.315,0.7];
             boardLocation = drawingBoardMatrix;
         end
-
-<<<<<<< HEAD
-        function penDrawing = penDrawingMatrix()
-
-            %ColourPoints = Motion.ColourPoints;
-
-            penDrawingMatrix = zeros(10,3);
-            penDrawingMatrix(1,:) = [-0.2, 0.4, 0.73];
-            penDrawingMatrix(2,:) = [-0.2, 0.3, 0.73];
-            penDrawingMatrix(3,:) = [-0.2, 0.2, 0.73];
-            penDrawingMatrix(4,:) = [-0.2, 0.1, 0.73];
-            penDrawingMatrix(5,:) = [-0.2, 0, 0.73];
-            penDrawingMatrix(6,:) = [-0.2, -0.1, 0.73];
-            penDrawingMatrix(7,:) = [-0.2, -0.2, 0.73];
-            penDrawingMatrix(8,:) = [-0.2, -0.3, 0.73];
-            penDrawingMatrix(9,:) = [-0.2, -0.4, 0.73];
-            penDrawingMatrix(10,:) = [-0.2, 0, 0.73];
-            penDrawing = penDrawingMatrix;
-        end
-
-
-=======
-        function HomePosition = HomePositionMatrix()
-            %Home Position
-            HomePositionMatrix = zeros(1,3);
-            HomePositionMatrix(1,:) = [0,0.5,1.1];
-            HomePosition = HomePositionMatrix;
-        end
-
-        % function penDrawing = penDrawingMatrix()
-        %
-        %     %ColourPoints = Motion.ColourPoints;
-        %
-        %     penDrawingMatrix = zeros(10,3);
-        %     penDrawingMatrix(1,:) = [-0.2, 0.4, 0.73];
-        %     penDrawingMatrix(2,:) = [-0.2, 0.3, 0.73];
-        %     penDrawingMatrix(3,:) = [-0.2, 0.2, 0.73];
-        %     penDrawingMatrix(4,:) = [-0.2, 0.1, 0.73];
-        %     penDrawingMatrix(5,:) = [-0.2, 0, 0.73];
-        %     penDrawingMatrix(6,:) = [-0.2, -0.1, 0.73];
-        %     penDrawingMatrix(7,:) = [-0.2, -0.2, 0.73];
-        %     penDrawingMatrix(8,:) = [-0.2, -0.3, 0.73];
-        %     penDrawingMatrix(9,:) = [-0.2, -0.4, 0.73];
-        %     penDrawingMatrix(10,:) = [-0.2, 0, 0.73];
-        %     penDrawing = penDrawingMatrix;
-        % end
->>>>>>> 40bfab72533041950462d0f937595151fe27aad3
     end
 end
