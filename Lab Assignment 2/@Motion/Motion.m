@@ -80,6 +80,7 @@ classdef Motion < handle
                 %draw on page 
                             count = 50;
                 ColourPoints = 9;
+                dist = 1;
     
                 %initial paper locations
                 Drawing = zeros(ColourPoints,3);
@@ -120,6 +121,12 @@ classdef Motion < handle
                 for i = 1:length(qPath2)
                     r2.model.animate(qPath2(i,:));
                     drawnow();
+                    % tr = r2.model.fkine(r2.model.getpos).T;
+                    % endP = tr(1:3,4)' + dist * tr(1:3,3)';
+                    % plot3(endP(1),endP(2),endP(3),'r*');
+                    % axis equal;
+                    % verts = endP;
+                    % pause(1);
                 end
     
                 qPath3 = jtraj(r2p2,r2p3,count);

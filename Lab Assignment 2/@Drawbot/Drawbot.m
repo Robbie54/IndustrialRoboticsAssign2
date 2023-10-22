@@ -39,8 +39,8 @@ classdef Drawbot < RobotBaseClass
         %% CreateModel
         function CreateModel(self)
             link(1) = Link('d',0,'a',0,'alpha',0,'offset',0,'qlim', deg2rad([-90,90]));
-            link(2) = Link('d',0,'a',0.3,'alpha',0,'offset',-3*pi/8,'qlim', deg2rad([-90,90]));
-            link(3) = Link('d',0,'a',0.3,'alpha',0,'offset',7*pi/8,'qlim', deg2rad([-180,180]));
+            link(2) = Link('d',0,'a',0.2,'alpha',0,'offset',-3*pi/8,'qlim', deg2rad([-90,90]));
+            link(3) = Link('d',0,'a',0.2,'alpha',0,'offset',7*pi/8,'qlim', deg2rad([-180,180]));
             link(4) = Link('d',0,'a',0,'alpha',0,'offset',0);
 
             self.model = SerialLink(link,'name',self.name);
