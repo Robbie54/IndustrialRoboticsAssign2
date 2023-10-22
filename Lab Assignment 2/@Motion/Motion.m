@@ -111,7 +111,13 @@ classdef Motion < handle
     
                 %% Pathing and Animation
                 % Pathing from Start to Brick 1 Position
-                qPath1 = jtraj(rsp,r2p1,count);
+                qPath1 = jtraj(rsp,r2p1,count)
+                
+                
+                check = CollisionChecking;
+               
+                hi =  check.IsCollision(r2,qPath1)
+                
                 for i = 1:length(qPath1)
                     r2.model.animate(qPath1(i,:));
                     drawnow();
@@ -137,6 +143,7 @@ classdef Motion < handle
     
                 qPath4 = jtraj(r2p3,r2p4,count);
                 for i = 1:length(qPath4)
+
                     r2.model.animate(qPath4(i,:));
                     drawnow();
                 end
