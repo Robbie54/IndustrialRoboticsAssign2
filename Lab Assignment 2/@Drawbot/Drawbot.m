@@ -12,12 +12,12 @@ classdef Drawbot < RobotBaseClass
 
     methods
         %% Constructor
-        function self = Drawbot(baseTr) %,useTool,toolFilename)
+        function self = Drawbot(baseTr)%,useTool,toolFilename)
             if nargin < 3
                 if nargin == 2
                     error('If you set useTool you must pass in the toolFilename as well');
                 elseif nargin == 0 % Nothing passed
-                    baseTr = transl(-0.5,0,0.73);
+                    baseTr = transl(-0.5,0,0.75);
                 end
             else % All passed in
                 % self.useTool = useTool;
