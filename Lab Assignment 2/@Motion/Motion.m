@@ -74,7 +74,7 @@ classdef Motion < handle
                 placePaperToDrawingBoard(paperIndex, initialLocation, middleLocation);
 
                 %draw on page
-                count = 50;
+                count = 20;
                 ColourPoints = 9;
                 dist = -0.05;
 
@@ -154,7 +154,6 @@ classdef Motion < handle
 
                 qPath4 = jtraj(r2p3,r2p4,count);
                 for i = 1:length(qPath4)
-
                     r2.model.animate(qPath4(i,:));
                     drawnow();
                     tr = r2.model.fkine(r2.model.getpos).T;
