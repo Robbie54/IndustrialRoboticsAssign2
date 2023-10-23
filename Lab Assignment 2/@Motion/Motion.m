@@ -6,8 +6,6 @@ classdef Motion < handle
         initialPaper = Motion.initialPaperMatrix();
         finalPaper = Motion.finalPaperMatrix();
         boardLocation = Motion.drawingBoardMatrix();
-        HomePosition = Motion.HomePositionMatrix();
-        % penDrawing = Motion.penDrawingMatrix();
     end
     properties
         % r1 = UR3();
@@ -46,8 +44,6 @@ classdef Motion < handle
             initialPaper = Motion.initialPaper;
             finalPaper = Motion.finalPaper;
             boardLocation = Motion.boardLocation;
-            HomePosition = Motion.HomePosition;
-            % penDrawing = Motion.penDrawing;
 
             %create matrix that will store unique identifer to the paper so
             %they can be called in the future
@@ -75,7 +71,7 @@ classdef Motion < handle
                 finalLocation = finalPaper(paperIndex,:);
 
                 %moving paper from initial stack to drawing board
-                placePaper(paperIndex, initialLocation, middleLocation, HomePosition);
+                placePaperToDrawingBoard(paperIndex, initialLocation, middleLocation);
 
                 %draw on page
                 count = 50;
@@ -242,10 +238,10 @@ classdef Motion < handle
                 end
 
                 %moving paper from drawing board to final stack
-                placePaper(paperIndex, middleLocation, finalLocation, HomePosition);
+                placePaperToStack(paperIndex, middleLocation, finalLocation);
             end
 
-            function placePaper(paperIndex,initialLocation,finalLocation,HomePosition)
+            function placePaperToDrawingBoard(paperIndex,initialLocation,finalLocation)
 
 
                 %set count variable to dictate how many joint angle paths
@@ -303,12 +299,71 @@ classdef Motion < handle
                 end
 
                 %%move robot back to initial position
-                HomePosition = r1.model.ikcon(transl([0,0.5,1.1]));
                 count = 100;
+                q = [pi/2 3*pi/2 0 0 0 0];
                 robotLocation = r1.model.getpos();
-                QPath = jtraj(robotLocation, HomePosition, count);
+                QPath = jtraj(robotLocation, q, count);
                 for h = 1:size(QPath, 1)
                     r1.model.animate(QPath(h, :));
+                    drawnow();
+                end
+
+
+            end
+            function placePaperToStack(paperIndex,initialLocation,finalLocation)
+
+                
+                %set count variable to dictate how many joint angle paths
+                %will be created to model the Path.
+                count = 100;
+
+                %get the robots current arm location
+                robotLocation = r1.model.getpos();
+
+                %calculate the joint angles necessary to traverse to the
+                %chosen paper location. paper is rotated so the Z-axis is
+                %facing down here so that the robot grabs the paper from
+                %the top.
+                currentPaperPath = r1.model.ikcon(transl(initialLocation)*troty(pi));
+
+                %computes a joint space trajectory that inrerpolates
+                %between the robots position and chosen brick location.
+                currentQPath = jtraj(robotLocation, currentPaperPath, count);
+
+                %for each joint step
+                for j = 1:size(currentQPath, 1)
+                    %animate the robots arm
+                    r1.model.animate(currentQPath(j, :));
+                    drawnow();
+                end
+
+                %% move to final Paper stack location
+                %calculate the joint angles necessary to traverse to the
+                %paper location. paper is rotated so the Z-axis is
+                %facing down here so that the robot places the paper from
+                %the top.
+                finalPaperPath = r1.model.ikcon(transl(finalLocation)*troty(pi));
+
+                %computes a joint space trajectory that inrerpolates
+                %between the robots position and final paper location.
+                finalQPath = jtraj(currentPaperPath, finalPaperPath, count);
+
+                %for each joint step
+                for h = 1:size(finalQPath, 1)
+
+                    %animate arm
+                    r1.model.animate(finalQPath(h, :));
+
+                    %calculate the end effector transform of the robot arm
+                    endEffectorTransform = r1.model.fkine(r1.model.getpos()).T;
+
+                    %update paper vertices to the new coordinates of the
+                    %robots end effector
+                    transformedBrickVertices = [vertices, ones(size(vertices, 1), 1)]*endEffectorTransform';
+
+                    %update the paper vertices with the transformed
+                    %vertices
+                    set(paperUniqueID{paperIndex}, 'Vertices', transformedBrickVertices(:, 1:3));
                     drawnow();
                 end
             end
@@ -349,30 +404,5 @@ classdef Motion < handle
             drawingBoardMatrix(1,:) = [-0.2,0.315,0.7];
             boardLocation = drawingBoardMatrix;
         end
-
-        function HomePosition = HomePositionMatrix()
-            %Home Position
-            HomePositionMatrix = zeros(1,3);
-            HomePositionMatrix(1,:) = [0,0.5,1.1];
-            HomePosition = HomePositionMatrix;
-        end
-
-        % function penDrawing = penDrawingMatrix()
-        %
-        %     %ColourPoints = Motion.ColourPoints;
-        %
-        %     penDrawingMatrix = zeros(10,3);
-        %     penDrawingMatrix(1,:) = [-0.2, 0.4, 0.73];
-        %     penDrawingMatrix(2,:) = [-0.2, 0.3, 0.73];
-        %     penDrawingMatrix(3,:) = [-0.2, 0.2, 0.73];
-        %     penDrawingMatrix(4,:) = [-0.2, 0.1, 0.73];
-        %     penDrawingMatrix(5,:) = [-0.2, 0, 0.73];
-        %     penDrawingMatrix(6,:) = [-0.2, -0.1, 0.73];
-        %     penDrawingMatrix(7,:) = [-0.2, -0.2, 0.73];
-        %     penDrawingMatrix(8,:) = [-0.2, -0.3, 0.73];
-        %     penDrawingMatrix(9,:) = [-0.2, -0.4, 0.73];
-        %     penDrawingMatrix(10,:) = [-0.2, 0, 0.73];
-        %     penDrawing = penDrawingMatrix;
-        % end
     end
 end
