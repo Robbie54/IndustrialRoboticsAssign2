@@ -64,8 +64,6 @@ classdef Environment < handle
             verts = [get(f8,'Vertices'), ones(size(get(f8,'Vertices'),1),1)] * trotz(0);
             set(f8,'Vertices',verts(:,1:3))
 
-            PlaceObject('papersheet_industrial.ply',[0,0.5,1])
-
             % Updating User of Current Progress
             disp('Environment Generation Complete');
         end
