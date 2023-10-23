@@ -44,6 +44,7 @@ classdef Motion < handle
             initialPaper = Motion.initialPaper;
             finalPaper = Motion.finalPaper;
             boardLocation = Motion.boardLocation;
+            baseTr = [0.2, -0.4, 0.7];
 
             %create matrix that will store unique identifer to the paper so
             %they can be called in the future
@@ -53,9 +54,9 @@ classdef Motion < handle
             % spawn in brick at 0,0,0. translate by the initial brick
             % location matrix
             for paperIndex = 1:paperNo
-                paperUniqueID{paperIndex} = PlaceObject('papersheet_industrial_flipped.ply'); %brickMatrix(brickIndex, :)
+                paperUniqueID{paperIndex} = PlaceObject('papersheet_industrial_flipped.ply');%, [0.2, -0.4, 0.7]); %brickMatrix(brickIndex, :)
                 vertices = get(paperUniqueID{paperIndex}, 'Vertices');
-                transformedVertices = [vertices,ones(size(vertices,1),1)] * transl(initialPaper(paperIndex,:))';
+                transformedVertices = [vertices,ones(size(vertices,1),1)] * transl(initialPaper(paperIndex,:))'; %* transl(baseTr); %transl(initialPaper(paperIndex,:))';
                 set(paperUniqueID{paperIndex},'Vertices',transformedVertices(:,1:3));
             end
 
@@ -77,21 +78,21 @@ classdef Motion < handle
                 %draw on page
                 count = 20;
                 ColourPoints = 9;
-                dist = -0.05;
+                dist = -0.04;
 
                 %initial paper locations
                 Drawing = zeros(ColourPoints,3);
                 %initialPaperMatrix(1,:) = ....
-                Drawing(1,:) = [0.05, 0.07, 0.75];
-                Drawing(2,:) = [0.05, -0.07, 0.75];
-                Drawing(3,:) = [0, -0.08, 0.75];
-                Drawing(4,:) = [-0.02, -0.06, 0.75];
-                Drawing(5,:) = [-0.04, -0.03, 0.75];
-                Drawing(6,:) = [-0.05, 0, 0.75];
-                Drawing(7,:) = [-0.04, 0.03, 0.75];
-                Drawing(8,:) = [-0.02, 0.06, 0.75];
-                Drawing(9,:) = [0, 0.08, 0.75];
-                Drawing(10,:) = [0, 0, 0.75];
+                Drawing(1,:) = [0.01, 0.07, 0.75];
+                Drawing(2,:) = [0.01, -0.07, 0.75];
+                Drawing(3,:) = [-0.04, -0.08, 0.75];
+                Drawing(4,:) = [-0.06, -0.06, 0.75];
+                Drawing(5,:) = [-0.08, -0.03, 0.75];
+                Drawing(6,:) = [-0.09, 0, 0.75];
+                Drawing(7,:) = [-0.08, 0.03, 0.75];
+                Drawing(8,:) = [-0.06, 0.06, 0.75];
+                Drawing(9,:) = [-0.04, 0.08, 0.75];
+                Drawing(10,:) = [-0.04, 0, 0.75];
 
                 rsp = r2.model.getpos;
                 r2p1 = r2.model.ikcon(transl(Drawing(1,:)));
@@ -122,9 +123,7 @@ classdef Motion < handle
 
                 tr = r2.model.fkine(r2.model.getpos).T;
                 endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                plot3(endP(1),endP(2),endP(3),'y*');
-                axis equal;
-                verts = endP;
+                plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                 pause(0.1);
 
                 qPath2 = jtraj(r2p1,r2p2,count);
@@ -132,12 +131,10 @@ classdef Motion < handle
                     r2.model.animate(qPath2(i,:));
                     drawnow();
                 end
-
+                
                 tr = r2.model.fkine(r2.model.getpos).T;
                 endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                plot3(endP(1),endP(2),endP(3),'y*');
-                axis equal;
-                verts = endP;
+                plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                 pause(0.1);
 
                 qPath3 = jtraj(r2p2,r2p3,count);
@@ -148,9 +145,7 @@ classdef Motion < handle
 
                 tr = r2.model.fkine(r2.model.getpos).T;
                 endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                plot3(endP(1),endP(2),endP(3),'y*');
-                axis equal;
-                verts = endP;
+                plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                 pause(0.1);
 
                 qPath4 = jtraj(r2p3,r2p4,count);
@@ -159,9 +154,7 @@ classdef Motion < handle
                     drawnow();
                     tr = r2.model.fkine(r2.model.getpos).T;
                     endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                    plot3(endP(1),endP(2),endP(3),'y*');
-                    axis equal;
-                    verts = endP;
+                    plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                     pause(0.1);
                 end
 
@@ -171,9 +164,7 @@ classdef Motion < handle
                     drawnow();
                     tr = r2.model.fkine(r2.model.getpos).T;
                     endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                    plot3(endP(1),endP(2),endP(3),'y*');
-                    axis equal;
-                    verts = endP;
+                    plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                     pause(0.1);
                 end
 
@@ -183,9 +174,7 @@ classdef Motion < handle
                     drawnow();
                     tr = r2.model.fkine(r2.model.getpos).T;
                     endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                    plot3(endP(1),endP(2),endP(3),'y*');
-                    axis equal;
-                    verts = endP;
+                    plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                     pause(0.1);
                 end
 
@@ -195,9 +184,7 @@ classdef Motion < handle
                     drawnow();
                     tr = r2.model.fkine(r2.model.getpos).T;
                     endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                    plot3(endP(1),endP(2),endP(3),'y*');
-                    axis equal;
-                    verts = endP;
+                    plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                     pause(0.1);
                 end
 
@@ -207,9 +194,7 @@ classdef Motion < handle
                     drawnow();
                     tr = r2.model.fkine(r2.model.getpos).T;
                     endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                    plot3(endP(1),endP(2),endP(3),'y*');
-                    axis equal;
-                    verts = endP;
+                    plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                     pause(0.1);
                 end
 
@@ -219,9 +204,7 @@ classdef Motion < handle
                     drawnow();
                     tr = r2.model.fkine(r2.model.getpos).T;
                     endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                    plot3(endP(1),endP(2),endP(3),'y*');
-                    axis equal;
-                    verts = endP;
+                    plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                     pause(0.1);
                 end
 
@@ -263,8 +246,6 @@ classdef Motion < handle
                 currentPaperPath = r1.model.ikcon(transl(initialLocation)*troty(pi));
                 %currentPaperPath = r1.model.ikine(updatedLocation, 'q0', newQ, 'mask', [1,1,0,0,0,0]);
 
-                
-
                 %computes a joint space trajectory that inrerpolates
                 %between the robots position and chosen brick location.
                 currentQPath = jtraj(robotLocation, currentPaperPath, count);
@@ -281,14 +262,14 @@ classdef Motion < handle
                 %paper location. paper is rotated so the Z-axis is
                 %facing down here so that the robot places the paper from
                 %the top.
-                finalPaperPath = r1.model.ikcon(transl(finalLocation)*troty(pi))
+                finalPaperPath = r1.model.ikcon(transl(finalLocation)*troty(pi));
 
-                q = currentPaperPath
-                testPaperPath = r1.model.ikine(transl(finalLocation)*troty(pi), 'q0', q, 'mask', [0,0,0,0,1,1])
+                q = currentPaperPath;
+                testPaperPath = r1.model.ikine(transl(finalLocation)*troty(pi), 'q0', q, 'mask', [0,0,0,0,1,1]);
 
                 %computes a joint space trajectory that inrerpolates
                 %between the robots position and final paper location.
-                currentPaperPath
+                currentPaperPath;
                 finalQPath = jtraj(testPaperPath, finalPaperPath, count);
 
                 %for each joint step
@@ -319,12 +300,9 @@ classdef Motion < handle
                     r1.model.animate(QPath(h, :));
                     drawnow();
                 end
-
-
             end
-            function placePaperToStack(paperIndex,initialLocation,finalLocation)
 
-                
+            function placePaperToStack(paperIndex,initialLocation,finalLocation)
                 %set count variable to dictate how many joint angle paths
                 %will be created to model the Path.
                 count = 100;
@@ -388,11 +366,11 @@ classdef Motion < handle
 
             initialPaperMatrix = zeros(paperNo,3);
             %initialPaperMatrix(1,:) = ....
-            initialPaperMatrix(1,:) = [0.2, -0.315, 0.7];
-            initialPaperMatrix(2,:) = [0.2, -0.315, 0.71];
-            initialPaperMatrix(3,:) = [0.2, -0.315, 0.72];
-            initialPaperMatrix(4,:) = [0.2, -0.315, 0.73];
-            initialPaperMatrix(5,:) = [0.2, -0.315, 0.74];
+            initialPaperMatrix(1,:) = [0.2, -0.4, 0.7];
+            initialPaperMatrix(2,:) = [0.2, -0.4, 0.71];
+            initialPaperMatrix(3,:) = [0.2, -0.4, 0.72];
+            initialPaperMatrix(4,:) = [0.2, -0.4, 0.73];
+            initialPaperMatrix(5,:) = [0.2, -0.4, 0.74];
             initialPaper = initialPaperMatrix;
         end
 
@@ -402,18 +380,18 @@ classdef Motion < handle
 
             finalPaperMatrix = zeros(paperNo,3);
             %finalPaperMatrix(1,:) = ....
-            finalPaperMatrix(1,:) = [0.2, 0.315, 0.7];
-            finalPaperMatrix(2,:) = [0.2, 0.315, 0.71];
-            finalPaperMatrix(3,:) = [0.2, 0.315, 0.72];
-            finalPaperMatrix(4,:) = [0.2, 0.315, 0.73];
-            finalPaperMatrix(5,:) = [0.2, 0.315, 0.74];
+            finalPaperMatrix(1,:) = [0.2, 0.4, 0.7];
+            finalPaperMatrix(2,:) = [0.2, 0.4, 0.71];
+            finalPaperMatrix(3,:) = [0.2, 0.4, 0.72];
+            finalPaperMatrix(4,:) = [0.2, 0.4, 0.73];
+            finalPaperMatrix(5,:) = [0.2, 0.4, 0.74];
             finalPaper = finalPaperMatrix;
         end
 
         function boardLocation = drawingBoardMatrix()
             %drawing board
             drawingBoardMatrix = zeros(1,3);
-            drawingBoardMatrix(1,:) = [-0.2,0.315,0.7];
+            drawingBoardMatrix(1,:) = [0,0,0.7];
             boardLocation = drawingBoardMatrix;
         end
     end
