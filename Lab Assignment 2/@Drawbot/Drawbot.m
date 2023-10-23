@@ -12,7 +12,7 @@ classdef Drawbot < RobotBaseClass
 
     methods
         %% Constructor
-        function self = Drawbot(baseTr) %,useTool,toolFilename)
+        function self = Drawbot(baseTr)%,useTool,toolFilename)
             if nargin < 3
                 if nargin == 2
                     error('If you set useTool you must pass in the toolFilename as well');
@@ -30,7 +30,6 @@ classdef Drawbot < RobotBaseClass
             self.model.base = self.model.base.T * baseTr;
             % self.model.tool = self.toolTr;
             % self.PlotAndColourRobot();
-
             q = zeros(4);
             self.model.plot(q)
 
