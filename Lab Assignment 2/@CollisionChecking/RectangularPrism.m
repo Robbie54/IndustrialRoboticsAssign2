@@ -1,5 +1,5 @@
 function [vertex,face,faceNormals] = RectangularPrism(lower,upper,plotOptions,axis_h)
-if nargin<4
+if nargin<7
         axis_h=gca;
     if nargin<3
         plotOptions.plotVerts=false;
