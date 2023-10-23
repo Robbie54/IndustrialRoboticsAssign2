@@ -72,6 +72,7 @@ classdef Motion < handle
 
                 %moving paper from initial stack to drawing board
                 placePaperToDrawingBoard(paperIndex, initialLocation, middleLocation);
+                
 
                 %draw on page
                 count = 20;
@@ -235,9 +236,11 @@ classdef Motion < handle
                     r2.model.animate(qPath11(i,:));
                     drawnow();
                 end
+                
 
                 %moving paper from drawing board to final stack
                 placePaperToStack(paperIndex, middleLocation, finalLocation);
+
             end
 
             function placePaperToDrawingBoard(paperIndex,initialLocation,finalLocation)
@@ -254,7 +257,13 @@ classdef Motion < handle
                 %chosen paper location. paper is rotated so the Z-axis is
                 %facing down here so that the robot grabs the paper from
                 %the top.
+
+                %updatedLocation = transl(initialLocation)*troty(pi);
+
                 currentPaperPath = r1.model.ikcon(transl(initialLocation)*troty(pi));
+                %currentPaperPath = r1.model.ikine(updatedLocation, 'q0', newQ, 'mask', [1,1,0,0,0,0]);
+
+                
 
                 %computes a joint space trajectory that inrerpolates
                 %between the robots position and chosen brick location.
@@ -272,11 +281,15 @@ classdef Motion < handle
                 %paper location. paper is rotated so the Z-axis is
                 %facing down here so that the robot places the paper from
                 %the top.
-                finalPaperPath = r1.model.ikcon(transl(finalLocation)*troty(pi));
+                finalPaperPath = r1.model.ikcon(transl(finalLocation)*troty(pi))
+
+                q = currentPaperPath
+                testPaperPath = r1.model.ikine(transl(finalLocation)*troty(pi), 'q0', q, 'mask', [0,0,0,0,1,1])
 
                 %computes a joint space trajectory that inrerpolates
                 %between the robots position and final paper location.
-                finalQPath = jtraj(currentPaperPath, finalPaperPath, count);
+                currentPaperPath
+                finalQPath = jtraj(testPaperPath, finalPaperPath, count);
 
                 %for each joint step
                 for h = 1:size(finalQPath, 1)
@@ -389,11 +402,11 @@ classdef Motion < handle
 
             finalPaperMatrix = zeros(paperNo,3);
             %finalPaperMatrix(1,:) = ....
-            finalPaperMatrix(1,:) = [-0.2, 0.315, 0.7];
-            finalPaperMatrix(2,:) = [-0.2, 0.315, 0.71];
-            finalPaperMatrix(3,:) = [-0.2, 0.315, 0.72];
-            finalPaperMatrix(4,:) = [-0.2, 0.315, 0.73];
-            finalPaperMatrix(5,:) = [-0.2, 0.315, 0.74];
+            finalPaperMatrix(1,:) = [0.2, 0.315, 0.7];
+            finalPaperMatrix(2,:) = [0.2, 0.315, 0.71];
+            finalPaperMatrix(3,:) = [0.2, 0.315, 0.72];
+            finalPaperMatrix(4,:) = [0.2, 0.315, 0.73];
+            finalPaperMatrix(5,:) = [0.2, 0.315, 0.74];
             finalPaper = finalPaperMatrix;
         end
 
