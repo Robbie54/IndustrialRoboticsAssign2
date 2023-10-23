@@ -7,7 +7,7 @@ classdef Motion < handle
         finalPaper = Motion.finalPaperMatrix();
         boardLocation = Motion.drawingBoardMatrix();
         HomePosition = Motion.HomePositionMatrix();
-        penDrawing = Motion.penDrawingMatrix();
+        % penDrawing = Motion.penDrawingMatrix();
     end
     properties
         % r1 = UR3();
@@ -47,7 +47,7 @@ classdef Motion < handle
             finalPaper = Motion.finalPaper;
             boardLocation = Motion.boardLocation;
             HomePosition = Motion.HomePosition;
-            penDrawing = Motion.penDrawing;
+            % penDrawing = Motion.penDrawing;
 
             %create matrix that will store unique identifer to the paper so
             %they can be called in the future
@@ -77,25 +77,25 @@ classdef Motion < handle
                 %moving paper from initial stack to drawing board
                 placePaper(paperIndex, initialLocation, middleLocation, HomePosition);
 
-                %draw on page 
-                            count = 50;
+                %draw on page
+                count = 50;
                 ColourPoints = 9;
-                dist = 1;
-    
+                dist = -0.05;
+
                 %initial paper locations
                 Drawing = zeros(ColourPoints,3);
                 %initialPaperMatrix(1,:) = ....
-                Drawing(1,:) = [-0.2, 0.4, 0.73];
-                Drawing(2,:) = [-0.2, 0.3, 0.73];
-                Drawing(3,:) = [-0.2, 0.2, 0.73];
-                Drawing(4,:) = [-0.2, 0.1, 0.73];
-                Drawing(5,:) = [-0.2, 0, 0.73];
-                Drawing(6,:) = [-0.2, -0.1, 0.73];
-                Drawing(7,:) = [-0.2, -0.2, 0.73];
-                Drawing(8,:) = [-0.2, -0.3, 0.73];
-                Drawing(9,:) = [-0.2, -0.4, 0.73];
-                Drawing(10,:) = [-0.2, 0, 0.73];
-    
+                Drawing(1,:) = [0.05, 0.07, 0.75];
+                Drawing(2,:) = [0.05, -0.07, 0.75];
+                Drawing(3,:) = [0, -0.08, 0.75];
+                Drawing(4,:) = [-0.02, -0.06, 0.75];
+                Drawing(5,:) = [-0.04, -0.03, 0.75];
+                Drawing(6,:) = [-0.05, 0, 0.75];
+                Drawing(7,:) = [-0.04, 0.03, 0.75];
+                Drawing(8,:) = [-0.02, 0.06, 0.75];
+                Drawing(9,:) = [0, 0.08, 0.75];
+                Drawing(10,:) = [0, 0, 0.75];
+
                 rsp = r2.model.getpos;
                 r2p1 = r2.model.ikcon(transl(Drawing(1,:)));
                 r2p2 = r2.model.ikcon(transl(Drawing(2,:)));
@@ -107,83 +107,134 @@ classdef Motion < handle
                 r2p8 = r2.model.ikcon(transl(Drawing(8,:)));
                 r2p9 = r2.model.ikcon(transl(Drawing(9,:)));
                 r2p10 = r2.model.ikcon(transl(Drawing(10,:)));
-    
-    
+
+
                 %% Pathing and Animation
                 % Pathing from Start to Brick 1 Position
-                qPath1 = jtraj(rsp,r2p1,count)
-                
-                
-                check = CollisionChecking;
-               
-                hi =  check.IsCollision(r2,qPath1)
-                
+                qPath1 = jtraj(rsp,r2p1,count);
+
+
+                % check = CollisionChecking;
+                %
+                % hi =  check.IsCollision(r2,qPath1)
+
                 for i = 1:length(qPath1)
                     r2.model.animate(qPath1(i,:));
                     drawnow();
                 end
-    
+
+                tr = r2.model.fkine(r2.model.getpos).T;
+                endP = tr(1:3,4)' + dist * tr(1:3,3)';
+                plot3(endP(1),endP(2),endP(3),'y*');
+                axis equal;
+                verts = endP;
+                pause(0.1);
+
                 qPath2 = jtraj(r2p1,r2p2,count);
                 for i = 1:length(qPath2)
                     r2.model.animate(qPath2(i,:));
                     drawnow();
-                    % tr = r2.model.fkine(r2.model.getpos).T;
-                    % endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                    % plot3(endP(1),endP(2),endP(3),'r*');
-                    % axis equal;
-                    % verts = endP;
-                    % pause(1);
                 end
-    
+
+                tr = r2.model.fkine(r2.model.getpos).T;
+                endP = tr(1:3,4)' + dist * tr(1:3,3)';
+                plot3(endP(1),endP(2),endP(3),'y*');
+                axis equal;
+                verts = endP;
+                pause(0.1);
+
                 qPath3 = jtraj(r2p2,r2p3,count);
                 for i = 1:length(qPath3)
                     r2.model.animate(qPath3(i,:));
                     drawnow();
                 end
-    
+
+                tr = r2.model.fkine(r2.model.getpos).T;
+                endP = tr(1:3,4)' + dist * tr(1:3,3)';
+                plot3(endP(1),endP(2),endP(3),'y*');
+                axis equal;
+                verts = endP;
+                pause(0.1);
+
                 qPath4 = jtraj(r2p3,r2p4,count);
                 for i = 1:length(qPath4)
 
                     r2.model.animate(qPath4(i,:));
                     drawnow();
+                    tr = r2.model.fkine(r2.model.getpos).T;
+                    endP = tr(1:3,4)' + dist * tr(1:3,3)';
+                    plot3(endP(1),endP(2),endP(3),'y*');
+                    axis equal;
+                    verts = endP;
+                    pause(0.1);
                 end
-    
+
                 qPath5 = jtraj(r2p4,r2p5,count);
                 for i = 1:length(qPath5)
                     r2.model.animate(qPath5(i,:));
                     drawnow();
+                    tr = r2.model.fkine(r2.model.getpos).T;
+                    endP = tr(1:3,4)' + dist * tr(1:3,3)';
+                    plot3(endP(1),endP(2),endP(3),'y*');
+                    axis equal;
+                    verts = endP;
+                    pause(0.1);
                 end
-    
+
                 qPath6 = jtraj(r2p5,r2p6,count);
                 for i = 1:length(qPath6)
                     r2.model.animate(qPath6(i,:));
                     drawnow();
+                    tr = r2.model.fkine(r2.model.getpos).T;
+                    endP = tr(1:3,4)' + dist * tr(1:3,3)';
+                    plot3(endP(1),endP(2),endP(3),'y*');
+                    axis equal;
+                    verts = endP;
+                    pause(0.1);
                 end
-    
+
                 qPath7 = jtraj(r2p6,r2p7,count);
                 for i = 1:length(qPath7)
                     r2.model.animate(qPath7(i,:));
                     drawnow();
+                    tr = r2.model.fkine(r2.model.getpos).T;
+                    endP = tr(1:3,4)' + dist * tr(1:3,3)';
+                    plot3(endP(1),endP(2),endP(3),'y*');
+                    axis equal;
+                    verts = endP;
+                    pause(0.1);
                 end
-    
+
                 qPath8 = jtraj(r2p7,r2p8,count);
                 for i = 1:length(qPath8)
                     r2.model.animate(qPath8(i,:));
                     drawnow();
+                    tr = r2.model.fkine(r2.model.getpos).T;
+                    endP = tr(1:3,4)' + dist * tr(1:3,3)';
+                    plot3(endP(1),endP(2),endP(3),'y*');
+                    axis equal;
+                    verts = endP;
+                    pause(0.1);
                 end
-    
+
                 qPath9 = jtraj(r2p8,r2p9,count);
                 for i = 1:length(qPath9)
                     r2.model.animate(qPath9(i,:));
                     drawnow();
+                    tr = r2.model.fkine(r2.model.getpos).T;
+                    endP = tr(1:3,4)' + dist * tr(1:3,3)';
+                    plot3(endP(1),endP(2),endP(3),'y*');
+                    axis equal;
+                    verts = endP;
+                    pause(0.1);
                 end
-    
+
                 qPath10 = jtraj(r2p9,r2p10,count);
                 for i = 1:length(qPath10)
                     r2.model.animate(qPath10(i,:));
                     drawnow();
                 end
-    
+
                 qPath11 = jtraj(r2p10,rsp,count);
                 for i = 1:length(qPath11)
                     r2.model.animate(qPath11(i,:));
@@ -196,7 +247,7 @@ classdef Motion < handle
 
             function placePaper(paperIndex,initialLocation,finalLocation,HomePosition)
 
-                
+
                 %set count variable to dictate how many joint angle paths
                 %will be created to model the Path.
                 count = 100;
@@ -306,24 +357,22 @@ classdef Motion < handle
             HomePosition = HomePositionMatrix;
         end
 
-        function penDrawing = penDrawingMatrix()
-
-            %ColourPoints = Motion.ColourPoints;
-
-            penDrawingMatrix = zeros(10,3);
-            penDrawingMatrix(1,:) = [-0.2, 0.4, 0.73];
-            penDrawingMatrix(2,:) = [-0.2, 0.3, 0.73];
-            penDrawingMatrix(3,:) = [-0.2, 0.2, 0.73];
-            penDrawingMatrix(4,:) = [-0.2, 0.1, 0.73];
-            penDrawingMatrix(5,:) = [-0.2, 0, 0.73];
-            penDrawingMatrix(6,:) = [-0.2, -0.1, 0.73];
-            penDrawingMatrix(7,:) = [-0.2, -0.2, 0.73];
-            penDrawingMatrix(8,:) = [-0.2, -0.3, 0.73];
-            penDrawingMatrix(9,:) = [-0.2, -0.4, 0.73];
-            penDrawingMatrix(10,:) = [-0.2, 0, 0.73];
-            penDrawing = penDrawingMatrix;
-        end
-
-
+        % function penDrawing = penDrawingMatrix()
+        %
+        %     %ColourPoints = Motion.ColourPoints;
+        %
+        %     penDrawingMatrix = zeros(10,3);
+        %     penDrawingMatrix(1,:) = [-0.2, 0.4, 0.73];
+        %     penDrawingMatrix(2,:) = [-0.2, 0.3, 0.73];
+        %     penDrawingMatrix(3,:) = [-0.2, 0.2, 0.73];
+        %     penDrawingMatrix(4,:) = [-0.2, 0.1, 0.73];
+        %     penDrawingMatrix(5,:) = [-0.2, 0, 0.73];
+        %     penDrawingMatrix(6,:) = [-0.2, -0.1, 0.73];
+        %     penDrawingMatrix(7,:) = [-0.2, -0.2, 0.73];
+        %     penDrawingMatrix(8,:) = [-0.2, -0.3, 0.73];
+        %     penDrawingMatrix(9,:) = [-0.2, -0.4, 0.73];
+        %     penDrawingMatrix(10,:) = [-0.2, 0, 0.73];
+        %     penDrawing = penDrawingMatrix;
+        % end
     end
 end
