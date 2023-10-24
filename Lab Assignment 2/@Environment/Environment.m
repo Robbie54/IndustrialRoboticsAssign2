@@ -4,6 +4,12 @@ classdef Environment < handle
     %   Detailed explanation goes here
 
     %% Method Setup
+    properties 
+       table1CenterPoint = [0,0.5,0.6];
+       table2CenterPoint = [0,-0.5,0.6];
+       floor;
+       wall;
+    end 
     methods
         function self = Environment()
             self.Run();

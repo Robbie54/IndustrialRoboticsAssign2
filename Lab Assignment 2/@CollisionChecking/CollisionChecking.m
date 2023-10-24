@@ -6,10 +6,7 @@
     
     methods 
         function result = IsCollision(robot,qMatrix,returnOnceFound)
-            disp robot
-            disp qMatrix 
-            disp returnOnceFound
-            pause;
+           
         if nargin < 3
             returnOnceFound = true;
         end
