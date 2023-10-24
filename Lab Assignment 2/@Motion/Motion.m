@@ -113,6 +113,7 @@ classdef Motion < handle
                 qPath1 = jtraj(rsp,r2p1,count);
 
                 %check for collision in 1st motion can be done for each
+                %collision object is in the isCollision method 
                 Motion.IsCollision(r2,qPath1)
 
                 for i = 1:length(qPath1)
