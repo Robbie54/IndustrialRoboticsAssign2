@@ -394,7 +394,10 @@ classdef Motion < handle
             drawingBoardMatrix(1,:) = [0,0,0.7];
             boardLocation = drawingBoardMatrix;
         end
-
+    
+        %functions used from W5 isCollision file on canvas
+        %https://canvas.uts.edu.au/courses/27375/pages/lab-5-solution?module_item_id=1290554
+        % some adaptations have been made from the origional 
         function result = IsCollision(robot,qMatrix,returnOnceFound)
            
             if nargin < 3
@@ -407,7 +410,7 @@ classdef Motion < handle
             side = 0.1;
             plotOptions.plotFaces = true;
             [vertex,faces,faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
-            
+
             for qIndex = 1:size(qMatrix,1)
                 % Get the transform of every joint (i.e. start and end of every link)
                 tr = Motion.GetLinkPoses(qMatrix(qIndex,:), robot);
@@ -420,6 +423,8 @@ classdef Motion < handle
                         if check == 1 && Motion.IsIntersectionPointInsideTriangle(intersectP,vertex(faces(faceIndex,:)',:))
                             plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
                             display('Collision iminent abort!');
+                            
+
                             result = true;
                             if returnOnceFound
                                 return
