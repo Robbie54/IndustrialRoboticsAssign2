@@ -1,7 +1,5 @@
-%% Class Creation
+%% Envrionment Class Creation
 classdef Environment < handle
-    %ENVIRONMENT Summary of this class goes here
-    %   Detailed explanation goes here
 
     %% Method Setup
   
@@ -32,10 +30,9 @@ classdef Environment < handle
             
             % Places the Tables, the Estop Button, the Fire Extinguisher
             % and the Fences
-            PlaceObject('table.ply',[0,0.5,0.6]);
-            PlaceObject('table.ply',[0,-0.5,0.6]);
-            % PlaceObject('tableBlue1x1x0.5m.ply',[0.6,-0.5,0]);
-            % PlaceObject('tableBlue1x1x0.5m.ply',[-0.6,-0.5,0]);
+            PlaceObject('table.ply',[0,0.47,0.6]);
+            PlaceObject('table.ply',[0,-0.47,0.6]);
+            PlaceObject('Drawbot Platform Scaled.ply',[-0.5,0,0.685]);
             h = PlaceObject('emergencyStopWallMounted.ply', [0,-2.5,-0.7]);
             verts = [get(h,'Vertices'), ones(size(get(h,'Vertices'),1),1)] * trotx(pi);
             set(h,'Vertices',verts(:,1:3))

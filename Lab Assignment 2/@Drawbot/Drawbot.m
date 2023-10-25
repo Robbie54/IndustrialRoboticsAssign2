@@ -1,10 +1,5 @@
+%% Drawbot Class Creation
 classdef Drawbot < RobotBaseClass
-    %% UR3 Universal Robot 3kg payload robot model
-    %
-    % WARNING: This model has been created by UTS students in the subject
-    % 41013. No guarentee is made about the accuracy or correctness of the
-    % of the DH parameters of the accompanying ply files. Do not assume
-    % that this matches the real robot!
 
     properties(Access = public)
         plyFileNameStem = 'Drawbot';
@@ -30,8 +25,6 @@ classdef Drawbot < RobotBaseClass
             self.model.base = self.model.base.T * baseTr;
             self.model.tool = self.toolTr;
             self.PlotAndColourRobot();
-            % q = zeros(4);
-            % self.model.plot(q)
 
             drawnow
         end
@@ -44,8 +37,6 @@ classdef Drawbot < RobotBaseClass
             link(3) = Link('d',0,'a',0,'alpha',0,'offset',0);
 
             self.model = SerialLink(link,'name',self.name);
-
-            
         end
     end
 end

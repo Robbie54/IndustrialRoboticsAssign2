@@ -2,14 +2,9 @@ classdef Motion < handle
 
     properties (Constant)
         paperNo = 5;
-        %ColourPoints = 10;
         initialPaper = Motion.initialPaperMatrix();
         finalPaper = Motion.finalPaperMatrix();
         boardLocation = Motion.drawingBoardMatrix();
-    end
-    properties
-        % r1 = UR3();
-        % r2 = Drawbot();
     end
 
     methods
@@ -24,6 +19,8 @@ classdef Motion < handle
             % clear all;
             % close all;
             % clf;
+                
+            disp('Beginning Robot Motion, Spawning Robots')
 
             %initialise robot and attach suction cup to the end effector
             hold on;
@@ -32,8 +29,6 @@ classdef Motion < handle
             r1.model;
             r2.model;
             %q = zeros(1,7);
-            % b = SuctionCup();
-            % b.suctionModel{1}.base = r1.model.fkine(r1.model.getpos());
             %pause;
 
             axis equal;
@@ -72,7 +67,7 @@ classdef Motion < handle
 
                 %moving paper from initial stack to drawing board
                 placePaperToDrawingBoard(paperIndex, initialLocation, middleLocation);
-                
+
 
                 %draw on page
                 count = 20;
@@ -106,43 +101,43 @@ classdef Motion < handle
 
                 %% Pathing and Animation
                 % Pathing from Start to 1st Position
-                %below is for each position of the drawbot to draw 
+                %below is for each position of the drawbot to draw
                 qPath1 = jtraj(rsp,r2p1,count);
-            
-            if runOnce
-                centerpnt = [0,0,0.7];
-                side = 0.1;
-                plotOptions.plotFaces = true;
-                [vertex,faces,faceNormals, rectangleObjectHandle] = Motion.RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
-               
-               
-                %check for collision in 1st motion can be done for each
-                %collision object is in the isCollision method 
-                collision = Motion.IsCollision(r2,qPath1, vertex, faces, faceNormals);
-                if collision
-                    disp("Object will be deleted in 5 seconds");
-                    pause(5);
+
+                if runOnce
+                    centerpnt = [0,0,0.7];
+                    side = 0.1;
+                    plotOptions.plotFaces = true;
+                    [vertex,faces,faceNormals, rectangleObjectHandle] = Motion.RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
+
+
+                    %check for collision in 1st motion can be done for each
+                    %collision object is in the isCollision method
+                    collision = Motion.IsCollision(r2,qPath1, vertex, faces, faceNormals);
+                    if collision
+                        disp("Object will be deleted in 5 seconds");
+                        pause(5);
+                        delete(rectangleObjectHandle);
+                    end
+
+                    centerpnt = [2,0,0.1];
+                    side = 0.1;
+                    plotOptions.plotFaces = true;
+                    [vertex,faces,faceNormals, rectangleObjectHandle] = Motion.RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
+
+                    collision = Motion.IsCollision(r2,qPath1, vertex, faces, faceNormals);
                     delete(rectangleObjectHandle);
+
+                    if collision
+                        pause;
+                        disp("path not cleared")
+                    end
+
+                    disp("path clear no collision detected continuing in 5 seconds")
+                    pause(5);
+
                 end
-
-                centerpnt = [2,0,0.1];
-                side = 0.1;
-                plotOptions.plotFaces = true;
-                [vertex,faces,faceNormals, rectangleObjectHandle] = Motion.RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
-               
-                collision = Motion.IsCollision(r2,qPath1, vertex, faces, faceNormals);
-                delete(rectangleObjectHandle);
-
-                if collision 
-                    pause;
-                    disp("path not cleared")
-                end 
-
-                disp("path clear no collision detected continuing in 5 seconds")
-                pause(5);
-
-            end
-            runOnce = false;
+                runOnce = false;
 
                 for i = 1:length(qPath1)
                     r2.model.animate(qPath1(i,:));
@@ -153,18 +148,18 @@ classdef Motion < handle
                 endP = tr(1:3,4)' + dist * tr(1:3,3)';
                 d1 = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                 pause(0.1);
-                
+
                 qPath2 = jtraj(r2p1,r2p2,count);
                 for i = 1:length(qPath2)
                     r2.model.animate(qPath2(i,:));
                     drawnow();
                 end
-                
+
                 tr = r2.model.fkine(r2.model.getpos).T;
                 endP = tr(1:3,4)' + dist * tr(1:3,3)';
                 d2 = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                 pause(0.1);
-                
+
                 qPath3 = jtraj(r2p2,r2p3,count);
                 for i = 1:length(qPath3)
                     r2.model.animate(qPath3(i,:));
@@ -182,7 +177,7 @@ classdef Motion < handle
                     drawnow();
                     tr = r2.model.fkine(r2.model.getpos).T;
                     endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                    d4 = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
+                    d4(i,:) = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                     pause(0.1);
                 end
 
@@ -192,7 +187,7 @@ classdef Motion < handle
                     drawnow();
                     tr = r2.model.fkine(r2.model.getpos).T;
                     endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                    d5 = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
+                    d5(i,:) = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                     pause(0.1);
                 end
 
@@ -202,7 +197,7 @@ classdef Motion < handle
                     drawnow();
                     tr = r2.model.fkine(r2.model.getpos).T;
                     endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                    d6 = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
+                    d6(i,:) = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                     pause(0.1);
                 end
 
@@ -212,7 +207,7 @@ classdef Motion < handle
                     drawnow();
                     tr = r2.model.fkine(r2.model.getpos).T;
                     endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                    d7 = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
+                    d7(i,:) = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                     pause(0.1);
                 end
 
@@ -222,7 +217,7 @@ classdef Motion < handle
                     drawnow();
                     tr = r2.model.fkine(r2.model.getpos).T;
                     endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                    d8 = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
+                    d8(i,:) = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                     pause(0.1);
                 end
 
@@ -232,7 +227,7 @@ classdef Motion < handle
                     drawnow();
                     tr = r2.model.fkine(r2.model.getpos).T;
                     endP = tr(1:3,4)' + dist * tr(1:3,3)';
-                    d9 = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
+                    d9(i,:) = plot3(endP(1) + 0.04,endP(2),endP(3),'y*');
                     pause(0.1);
                 end
 
@@ -241,7 +236,7 @@ classdef Motion < handle
                     r2.model.animate(qPath11(i,:));
                     drawnow();
                 end
-                
+
                 delete(d1);
                 delete(d2);
                 delete(d3);
@@ -388,7 +383,7 @@ classdef Motion < handle
                     drawnow();
                 end
             end
-
+            disp('Robot Motion Complete, Despawning Robots')
         end
 
         function initialPaper = initialPaperMatrix()
@@ -425,106 +420,104 @@ classdef Motion < handle
             drawingBoardMatrix(1,:) = [0,0,0.685];
             boardLocation = drawingBoardMatrix;
         end
-    
+
         %functions used from W5 isCollision file on canvas
         %https://canvas.uts.edu.au/courses/27375/pages/lab-5-solution?module_item_id=1290554
-        % some adaptations have been made from the origional 
+        % some adaptations have been made from the origional
         function result = IsCollision(robot,qMatrix, vertex, faces, faceNormals)
-           
-            
-                returnOnceFound = true;
-         
+
+
+            returnOnceFound = true;
+
             result = false;
-         
-        
+
+
             for qIndex = 1:size(qMatrix,1)
                 % Get the transform of every joint (i.e. start and end of every link)
                 tr = Motion.GetLinkPoses(qMatrix(qIndex,:), robot);
-            
+
                 % Go through each link and also each triangle face
-                for i = 1 : size(tr,3)-1    
+                for i = 1 : size(tr,3)-1
                     for faceIndex = 1:size(faces,1)
                         vertOnPlane = vertex(faces(faceIndex,1)',:);
-                        [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)'); 
+                        [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)');
                         if check == 1 && Motion.IsIntersectionPointInsideTriangle(intersectP,vertex(faces(faceIndex,:)',:))
                             % plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
-                          
-                           
 
                             result = true;
                             if returnOnceFound
                                 return
                             end
                         end
-                    end    
+                    end
                 end
             end
         end
-        
-    
+
+
         function [ transforms ] = GetLinkPoses( q, robot)
             links = robot.model.links;
             transforms = zeros(4, 4, length(links) + 1);
             transforms(:,:,1) = robot.model.base;
-            
+
             for i = 1:length(links)
                 L = links(1,i);
-                
+
                 current_transform = transforms(:,:, i);
-                
+
                 current_transform = current_transform * trotz(q(1,i) + L.offset) * ...
-                transl(0,0, L.d) * transl(L.a,0,0) * trotx(L.alpha);
+                    transl(0,0, L.d) * transl(L.a,0,0) * trotx(L.alpha);
                 transforms(:,:,i + 1) = current_transform;
             end
         end
-        
+
         %% IsIntersectionPointInsideTriangle
         % Given a point which is known to be on the same plane as the triangle
-        % determine if the point is 
-        % inside (result == 1) or 
+        % determine if the point is
+        % inside (result == 1) or
         % outside a triangle (result ==0 )
         function result = IsIntersectionPointInsideTriangle(intersectP,triangleVerts)
-        
+
             u = triangleVerts(2,:) - triangleVerts(1,:);
             v = triangleVerts(3,:) - triangleVerts(1,:);
-            
+
             uu = dot(u,u);
             uv = dot(u,v);
             vv = dot(v,v);
-            
+
             w = intersectP - triangleVerts(1,:);
             wu = dot(w,u);
             wv = dot(w,v);
-            
+
             D = uv * uv - uu * vv;
-            
+
             % Get and test parametric coords (s and t)
             s = (uv * wv - vv * wu) / D;
             if (s < 0.0 || s > 1.0)        % intersectP is outside Triangle
                 result = 0;
                 return;
             end
-            
+
             t = (uv * wu - uu * wv) / D;
             if (t < 0.0 || (s + t) > 1.0)  % intersectP is outside Triangle
                 result = 0;
                 return;
             end
-            
+
             result = 1;                      % intersectP is in Triangle
         end
 
         function [vertex,face,faceNormals, objectHandle] = RectangularPrism(lower,upper,plotOptions,axis_h)
             if nargin<4
-                    axis_h=gca;
-            
+                axis_h=gca;
+
             end
-                plotOptions.plotVerts=false;
-                plotOptions.plotEdges=false;
-                plotOptions.plotFaces=true;
-            
+            plotOptions.plotVerts=false;
+            plotOptions.plotEdges=false;
+            plotOptions.plotFaces=true;
+
             hold on
-            
+
             vertex(1,:)=lower;
             vertex(2,:)=[upper(1),lower(2:3)];
             vertex(3,:)=[upper(1:2),lower(3)];
@@ -533,16 +526,16 @@ classdef Motion < handle
             vertex(6,:)=[lower(1:2),upper(3)];
             vertex(7,:)=[lower(1),upper(2),lower(3)];
             vertex(8,:)=upper;
-            
+
             face=[1,2,3;1,3,7;
-                 1,6,5;1,7,5;
-                 1,6,4;1,4,2;
-                 6,4,8;6,5,8;
-                 2,4,8;2,3,8;
-                 3,7,5;3,8,5;
-                 6,5,8;6,4,8];
-            
-            if 2 < nargout    
+                1,6,5;1,7,5;
+                1,6,4;1,4,2;
+                6,4,8;6,5,8;
+                2,4,8;2,3,8;
+                3,7,5;3,8,5;
+                6,5,8;6,4,8];
+
+            if 2 < nargout
                 faceNormals = zeros(size(face,1),3);
                 for faceIndex = 1:size(face,1)
                     v1 = vertex(face(faceIndex,1)',:);
@@ -559,36 +552,34 @@ classdef Motion < handle
                 end
             end
 
-        %% If you want to plot the edges
-        if isfield(plotOptions,'plotEdges') && plotOptions.plotEdges
-            links=[1,2;
-                2,3;
-                3,7;
-                7,1;
-                1,6;
-                5,6;
-                5,7;
-                4,8;
-                5,8;
-                6,4;
-                4,2;
-                8,3];
-        
-            for i=1:size(links,1)
-                plot3(axis_h,[vertex(links(i,1),1),vertex(links(i,2),1)],...
-                    [vertex(links(i,1),2),vertex(links(i,2),2)],...
-                    [vertex(links(i,1),3),vertex(links(i,2),3)],'k')
+            %% If you want to plot the edges
+            if isfield(plotOptions,'plotEdges') && plotOptions.plotEdges
+                links=[1,2;
+                    2,3;
+                    3,7;
+                    7,1;
+                    1,6;
+                    5,6;
+                    5,7;
+                    4,8;
+                    5,8;
+                    6,4;
+                    4,2;
+                    8,3];
+
+                for i=1:size(links,1)
+                    plot3(axis_h,[vertex(links(i,1),1),vertex(links(i,2),1)],...
+                        [vertex(links(i,1),2),vertex(links(i,2),2)],...
+                        [vertex(links(i,1),3),vertex(links(i,2),3)],'k')
+                end
+            end
+
+            %% If you want to plot the edges
+            if isfield(plotOptions,'plotFaces') && plotOptions.plotFaces
+                tcolor = [.2 .2 .8];
+
+                objectHandle = patch('Faces',face,'Vertices',vertex,'FaceVertexCData',tcolor,'FaceColor','flat','lineStyle','none');
             end
         end
-        
-        %% If you want to plot the edges
-        if isfield(plotOptions,'plotFaces') && plotOptions.plotFaces
-            tcolor = [.2 .2 .8];
-            
-           objectHandle = patch('Faces',face,'Vertices',vertex,'FaceVertexCData',tcolor,'FaceColor','flat','lineStyle','none');
-        end
-        
-        end
-    
     end
 end

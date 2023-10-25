@@ -3,6 +3,8 @@ close all
 clc
 clf
 
+disp('Starting Program')
+
 Environment.Run()
 Motion.RobotMotion()
 
@@ -16,3 +18,5 @@ Motion.RobotMotion()
 
 %potentially use teach as normal then add another panel on other side that
 %does cartesian movements
+
+disp('Program Complete')
