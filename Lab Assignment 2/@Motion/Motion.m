@@ -409,7 +409,7 @@ classdef Motion < handle
             centerpnt = [0,0,0.7];
             side = 0.1;
             plotOptions.plotFaces = true;
-            [vertex,faces,faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
+            [vertex,faces,faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions)s;
 
             for qIndex = 1:size(qMatrix,1)
                 % Get the transform of every joint (i.e. start and end of every link)
