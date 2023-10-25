@@ -17,7 +17,7 @@ classdef Drawbot < RobotBaseClass
                 if nargin == 2
                     error('If you set useTool you must pass in the toolFilename as well');
                 elseif nargin == 0 % Nothing passed
-                    baseTr = transl(-0.5,0,0.75);
+                    baseTr = transl(-0.5,0,0.725);
                 end
             else % All passed in
                 self.useTool = useTool;
