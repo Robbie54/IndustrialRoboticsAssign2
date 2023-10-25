@@ -409,8 +409,7 @@ classdef Motion < handle
             centerpnt = [0,0,0.7];
             side = 0.1;
             plotOptions.plotFaces = true;
-            [vertex,faces,faceNormals, rectangleObjectHandle] = Motion.RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
-         
+            [vertex,faces,faceNormals] = Motion.RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
             for qIndex = 1:size(qMatrix,1)
                 % Get the transform of every joint (i.e. start and end of every link)
                 tr = Motion.GetLinkPoses(qMatrix(qIndex,:), robot);
@@ -424,8 +423,8 @@ classdef Motion < handle
                             plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
                             display('Collision iminent abort!');
                             pause;
-                            delete(rectangleObjectHandle)
-                            display('deleting clear to move!')
+                            
+                            display('deleting')
                             pause;
 
                             result = true;
@@ -491,7 +490,7 @@ classdef Motion < handle
             result = 1;                      % intersectP is in Triangle
         end
 
-        function [vertex,face,faceNormals, objectHandle] = RectangularPrism(lower,upper,plotOptions,axis_h)
+        function [vertex,face,faceNormals] = RectangularPrism(lower,upper,plotOptions,axis_h)
             if nargin<4
                     axis_h=gca;
                 if nargin<3
@@ -500,10 +499,6 @@ classdef Motion < handle
                     plotOptions.plotFaces=true;
                 end
             end
-                plotOptions.plotVerts=false;
-                plotOptions.plotEdges=false;
-                plotOptions.plotFaces=true;
-            
             hold on
             
             vertex(1,:)=lower;
@@ -566,7 +561,7 @@ classdef Motion < handle
         if isfield(plotOptions,'plotFaces') && plotOptions.plotFaces
             tcolor = [.2 .2 .8];
             
-           objectHandle = patch('Faces',face,'Vertices',vertex,'FaceVertexCData',tcolor,'FaceColor','flat','lineStyle','none');
+            patch('Faces',face,'Vertices',vertex,'FaceVertexCData',tcolor,'FaceColor','flat','lineStyle','none');
         end
         
         end
