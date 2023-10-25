@@ -61,7 +61,7 @@ classdef Motion < handle
 
             %Create a nested for loop to iterate through the robot arms
             %path and update the animation
-
+            runOnce = true;
             %For each brick 1-9:
             for paperIndex = 1:paperNo
 
@@ -108,10 +108,41 @@ classdef Motion < handle
                 % Pathing from Start to 1st Position
                 %below is for each position of the drawbot to draw 
                 qPath1 = jtraj(rsp,r2p1,count);
-
+            
+            if runOnce
+                centerpnt = [0,0,0.7];
+                side = 0.1;
+                plotOptions.plotFaces = true;
+                [vertex,faces,faceNormals, rectangleObjectHandle] = Motion.RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
+               
+               
                 %check for collision in 1st motion can be done for each
                 %collision object is in the isCollision method 
-                Motion.IsCollision(r2,qPath1)
+                collision = Motion.IsCollision(r2,qPath1, vertex, faces, faceNormals);
+                if collision
+                    disp("Object will be deleted in 5 seconds");
+                    pause(5);
+                    delete(rectangleObjectHandle);
+                end
+
+                centerpnt = [2,0,0.1];
+                side = 0.1;
+                plotOptions.plotFaces = true;
+                [vertex,faces,faceNormals, rectangleObjectHandle] = Motion.RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
+               
+                collision = Motion.IsCollision(r2,qPath1, vertex, faces, faceNormals);
+                delete(rectangleObjectHandle);
+
+                if collision 
+                    pause;
+                    disp("path not cleared")
+                end 
+
+                disp("path clear no collision detected continuing in 5 seconds")
+                pause(5);
+
+            end
+            runOnce = false;
 
                 for i = 1:length(qPath1)
                     r2.model.animate(qPath1(i,:));
@@ -398,19 +429,14 @@ classdef Motion < handle
         %functions used from W5 isCollision file on canvas
         %https://canvas.uts.edu.au/courses/27375/pages/lab-5-solution?module_item_id=1290554
         % some adaptations have been made from the origional 
-        function result = IsCollision(robot,qMatrix,returnOnceFound)
+        function result = IsCollision(robot,qMatrix, vertex, faces, faceNormals)
            
-            if nargin < 3
+            
                 returnOnceFound = true;
-            end
+         
             result = false;
-          
          
-            centerpnt = [0,0,0.7];
-            side = 0.1;
-            plotOptions.plotFaces = true;
-            [vertex,faces,faceNormals, rectangleObjectHandle] = Motion.RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
-         
+        
             for qIndex = 1:size(qMatrix,1)
                 % Get the transform of every joint (i.e. start and end of every link)
                 tr = Motion.GetLinkPoses(qMatrix(qIndex,:), robot);
@@ -421,12 +447,9 @@ classdef Motion < handle
                         vertOnPlane = vertex(faces(faceIndex,1)',:);
                         [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)'); 
                         if check == 1 && Motion.IsIntersectionPointInsideTriangle(intersectP,vertex(faces(faceIndex,:)',:))
-                            plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
-                            display('Collision iminent abort!');
-                            pause;
-                            delete(rectangleObjectHandle)
-                            display('deleting clear to move!')
-                            pause;
+                            % plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
+                          
+                           
 
                             result = true;
                             if returnOnceFound
@@ -494,11 +517,7 @@ classdef Motion < handle
         function [vertex,face,faceNormals, objectHandle] = RectangularPrism(lower,upper,plotOptions,axis_h)
             if nargin<4
                     axis_h=gca;
-                if nargin<3
-                    plotOptions.plotVerts=false;
-                    plotOptions.plotEdges=true;
-                    plotOptions.plotFaces=true;
-                end
+            
             end
                 plotOptions.plotVerts=false;
                 plotOptions.plotEdges=false;
