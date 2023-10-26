@@ -44,6 +44,7 @@ classdef UR3 < RobotBaseClass
             link(4) = Link('d',0.11235,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]),'offset', 0);
             link(5) = Link('d',0.08535,'a',0,'alpha',-pi/2,'qlim',deg2rad([-360,360]), 'offset',0);
             link(6) = Link('d',0.0819,'a',0,'alpha',0,'qlim',deg2rad([-360,360]), 'offset', 0);
+            link(7) = Link('d',0,'a',0, 'alpha',0, 'offset',0);
 
             self.model = SerialLink(link,'name',self.name);
         end
