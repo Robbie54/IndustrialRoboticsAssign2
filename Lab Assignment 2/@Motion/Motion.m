@@ -253,11 +253,10 @@ classdef Motion < handle
             end
 
             function placePaperToDrawingBoard(paperIndex,initialLocation,finalLocation)
-
-
                 %set count variable to dictate how many joint angle paths
                 %will be created to model the Path.
                 count = 100;
+                CupOffseft = [0 0 -0.05];
 
                 %get the robots current arm location
                 robotLocation = r1.model.getpos();
@@ -319,7 +318,7 @@ classdef Motion < handle
 
                 %%move robot back to initial position
                 count = 100;
-                q = [pi/2 3*pi/2 0 0 0 0];
+                q = [pi/2 3*pi/2 0 0 0 0 0];
                 robotLocation = r1.model.getpos();
                 QPath = jtraj(robotLocation, q, count);
                 for h = 1:size(QPath, 1)
