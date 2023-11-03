@@ -278,13 +278,13 @@ classdef Motion < handle
                 %the top.
                 finalPaperPath = r1.model.ikcon(transl(finalLocation)*troty(pi));
 
-                q = currentPaperPath;
-                testPaperPath = r1.model.ikine(transl(finalLocation)*troty(pi), 'q0', q, 'mask', [0,0,0,0,1,1]);
+                % q = currentPaperPath;
+                % testPaperPath = r1.model.ikine(transl(finalLocation)*troty(pi), 'q0', q, 'mask', [0,0,0,0,1,1]);
 
                 %computes a joint space trajectory that inrerpolates
                 %between the robots position and final paper location.
-                currentPaperPath;
-                finalQPath = jtraj(testPaperPath, finalPaperPath, count);
+                % currentPaperPath;
+                finalQPath = jtraj(currentPaperPath, finalPaperPath, count);
 
                 %for each joint step
                 for h = 1:size(finalQPath, 1)
