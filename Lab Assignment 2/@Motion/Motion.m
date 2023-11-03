@@ -314,6 +314,9 @@ classdef Motion < handle
                     %vertices
                     set(paperUniqueID{paperIndex}, 'Vertices', transformedBrickVertices(:, 1:3));
                     drawnow();
+
+                    %check for estop variable
+
                 end
 
                 %%move robot back to initial position
