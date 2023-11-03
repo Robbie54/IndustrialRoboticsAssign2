@@ -371,7 +371,7 @@ classdef Motion < handle
                     %update the paper vertices with the transformed
                     %vertices
                     set(paperUniqueID{paperIndex}, 'Vertices', transformedBrickVertices(:, 1:3));
-                    drawnow();
+                    drawnow(); 
                 end
             end
             disp('Robot Motion Complete, Despawning Robots')
@@ -410,6 +410,23 @@ classdef Motion < handle
             drawingBoardMatrix = zeros(1,3);
             drawingBoardMatrix(1,:) = [0,0,0.685];
             boardLocation = drawingBoardMatrix;
+        end
+
+        function checkForStatus()
+
+            %update variables 
+
+            %two outcomes
+
+            %first outcome
+            %stop = 1;
+            %pause motion and continually loop
+            %wait until stop = 0 and run = 1
+            %then break out of function / end
+
+            %second outcome
+            %stop = 0;
+            %continue with robot motion
         end
 
         %functions used from W5 isCollision file on canvas
