@@ -30,8 +30,6 @@ classdef UR3 < RobotBaseClass
             self.model.base = self.model.base.T * baseTr;
             self.model.tool = self.toolTr;
             self.PlotAndColourRobot();
-            % b = SuctionCup();
-            % b.suctionModel{1}.base = self.model.fkine(self.model.getpos());
 
             drawnow
         end

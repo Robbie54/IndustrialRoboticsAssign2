@@ -14,12 +14,7 @@ classdef Motion < handle
     end
 
     methods (Static)
-        function RobotMotion()
-            %clear workspace, command window and figures
-            % clear all;
-            % close all;
-            % clf;
-                
+        function RobotMotion()         
             disp('Beginning Robot Motion, Spawning Robots')
 
             %initialise robot and attach suction cup to the end effector
@@ -28,14 +23,9 @@ classdef Motion < handle
             r2 = Drawbot();
             r1.model;
             r2.model;
-            %q = zeros(1,7);
-            %pause;
-
-            axis equal;
 
             %initialise constant properties into function
             paperNo = Motion.paperNo;
-            %ColourPoints = Motion.ColourPoints;
             initialPaper = Motion.initialPaper;
             finalPaper = Motion.finalPaper;
             boardLocation = Motion.boardLocation;
@@ -45,7 +35,7 @@ classdef Motion < handle
             paperUniqueID = cell(paperNo, 1);
 
             % Create and store the paper identifier values via the loop.
-            % spawn in brick at 0,0,0. translate by the initial brick
+            % spawn in paper at 0,0,0. translate by the initial paper
             % location matrix
             for paperIndex = 1:paperNo
                 paperUniqueID{paperIndex} = PlaceObject('papersheet_industrial_flipped.ply');%, [0.2, -0.4, 0.7]); %brickMatrix(brickIndex, :)
@@ -101,7 +91,7 @@ classdef Motion < handle
 
                 %% Pathing and Animation
                 % Pathing from Start to 1st Position
-                %below is for each position of the drawbot to draw
+                % below is for each position of the drawbot to draw
                 qPath1 = jtraj(rsp,r2p1,count);
 
                 if runOnce
@@ -115,7 +105,7 @@ classdef Motion < handle
                     %collision object is in the isCollision method
                     collision = Motion.IsCollision(r2,qPath1, vertex, faces, faceNormals);
                     if collision
-                        disp("Object will be deleted in 5 seconds");
+                        disp("Obejct Detected, Path Obstructed. Object will be deleted in 5 seconds");
                         pause(5);
                         delete(rectangleObjectHandle);
                     end
@@ -130,10 +120,10 @@ classdef Motion < handle
 
                     if collision
                         pause;
-                        disp("path not cleared")
+                        disp("Obejct Detected. Path Obstructed")
                     end
 
-                    disp("path clear no collision detected continuing in 5 seconds")
+                    disp("Path clear, no collision detected. Continuing in 5 seconds.")
                     pause(5);
 
                 end
@@ -269,7 +259,6 @@ classdef Motion < handle
                 %updatedLocation = transl(initialLocation)*troty(pi);
 
                 currentPaperPath = r1.model.ikcon(transl(initialLocation)*troty(pi));
-                %currentPaperPath = r1.model.ikine(updatedLocation, 'q0', newQ, 'mask', [1,1,0,0,0,0]);
 
                 %computes a joint space trajectory that inrerpolates
                 %between the robots position and chosen brick location.
@@ -428,11 +417,9 @@ classdef Motion < handle
         % some adaptations have been made from the origional
         function result = IsCollision(robot,qMatrix, vertex, faces, faceNormals)
 
-
             returnOnceFound = true;
 
             result = false;
-
 
             for qIndex = 1:size(qMatrix,1)
                 % Get the transform of every joint (i.e. start and end of every link)

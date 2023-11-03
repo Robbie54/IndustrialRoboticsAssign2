@@ -24,16 +24,17 @@ classdef Environment < handle
             
             % Covers the Floor and Walls in Concrete
             surf([-2.5,-2.5;2.5,2.5],[-2.5,2.5;-2.5,2.5],[0.01,0.01;0.01,0.01],'CData',imread('concrete.jpg') ,'FaceColor','texturemap');
-            surf([-2.5,-2.5;-2.5,-2.5],[-2.5,2.5;-2.5,2.5], [3,3;0,0],'CData',imread('concrete.jpg'),'FaceColor','texturemap');
-            surf([-2.5,-2.5;2.5,2.5],[2.5,2.5;2.5,2.5], [3,0;3,0],'CData',imread('concrete.jpg'),'FaceColor','texturemap');
-            surf([-2.5,-2.5;-2.5,-2.5], [0.5,0.5;-0.5,-0.5], [1,2;1,2],'CData',imread('WarningSignR.jpg'),'FaceColor','texturemap');
+            surf([-2.5,-2.5;-2.5,-2.5],[-2.5,2.5;-2.5,2.5], [3,3;0,0],'CData',imread('Brick Wall.jpg'),'FaceColor','texturemap');
+            surf([-2.5,-2.5;2.5,2.5],[2.5,2.5;2.5,2.5], [3,0;3,0],'CData',imread('Brick Wall Rotated.jpg'),'FaceColor','texturemap');
+            surf([0.5,0.5;-0.5,-0.5], [2.5,2.5;2.5,2.5], [1,2;1,2],'CData',imread('Warning Sign Square.jpg'),'FaceColor','texturemap');
+            surf([-2.5,-2.5;-2.5,-2.5], [1.5,-1.5;1.5,-1.5], [2.5,2.5;0.5,0.5],'CData',imread('Window.jpg'),'FaceColor','texturemap');
             
             % Places the Tables, the Estop Button, the Fire Extinguisher
             % and the Fences
             PlaceObject('table.ply',[0,0.47,0.6]);
             PlaceObject('table.ply',[0,-0.47,0.6]);
             PlaceObject('Drawbot Platform Scaled.ply',[-0.5,0,0.685]);
-            h = PlaceObject('emergencyStopWallMounted.ply', [0,-2.5,-0.7]);
+            h = PlaceObject('emergencyStopWallMounted.ply', [-0.1,-2.5,-0.7]);
             verts = [get(h,'Vertices'), ones(size(get(h,'Vertices'),1),1)] * trotx(pi);
             set(h,'Vertices',verts(:,1:3))
             PlaceObject('fireExtinguisher.ply', [-2.3,2.3,0]);
